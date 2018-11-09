@@ -15,25 +15,25 @@ __"sudo chmod -R 755"__
 ### TO DO LIST
 
 
-###### Coursework To-Do
+##### Coursework Backlog
 
 
-###### Coursework On-Board
+##### Coursework On-Board
 
 
-###### Coursework Finish
+##### Coursework Finish/Release
 
 :exclamation: :exclamation: Important for IPP/Viva :computer:
 
+### Review
 
 
 ### Author
 
-
 | [João Maia <br> ](https://github.coventry.ac.uk/deoiveij/)                           |
 | :---:                                           | 
 |                                                 | 
-| <a href="https://twitter.com/wannabevunf1"><img src="authorsIMG/joao_maia.jpg" width="100"></a>| 
+| <a href="https://github.coventry.ac.uk/deoiveij/"><img src="joao-maia.jpg" width="100"></a>|  
 
-
+ 
 
