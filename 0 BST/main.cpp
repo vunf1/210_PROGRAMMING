@@ -1,3 +1,12 @@
+//Dev
+/* Version Control : Nothing done , only sample from moodle , add / delete nodes on the BST
+		KIS Design [x]
+		read/understand this sample [x]
+		implement add node to tree [ ]
+		implement remove node to tree [ ]
+		
+*/ 
+
 
 //#include "stdafx.h"
 
@@ -10,9 +19,6 @@ using namespace std;
 #include <vector>
 
 #include <ctype.h>
-#include <ncurses.h>
-
-#include "graficBST.h"
 #include "colors.h"
 
 class BinTreeNode {
@@ -80,10 +86,6 @@ void in_order(BinTreeNode* tree) {
 	if (tree->right != NULL)
 		in_order(tree->right);
 }
-
-
-
-
 
 
 
