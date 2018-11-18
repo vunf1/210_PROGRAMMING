@@ -36,7 +36,10 @@ public:
 
 };
 
-
+/*
+questions:
+where tree is saved?
+*/
 
 
 
@@ -96,9 +99,54 @@ void in_order(BinTreeNode* tree) {
 		in_order(tree->right);
 }
 
+/*
+
+Pseudo-code 
+
+Insert node
+
+BIN-TREE-INSERT(tree,item)
+IF tree = Ø
+	tree ← Node(item)
+ELSE IF tree.value > item
+	IF tree.left = 0
+		tree.left ← Node(item)
+	ELSE BIN-TREE-INSERT(tree.left,item)
+ELSE IF tree.right = 0
+	tree.right ← Node(item)
+ELSE BIN-TREE-INSERT(tree.right,item)
+RETURN r 
 
 
+Finding node
 
+BIN-TREE-FIND(tree,target)
+R ← tree
+WHILE r ≠ Ø
+	IF r.value = target
+		RETURN r (or TRUE)
+	ELSE IF r.value > target
+		r ← r.left
+		ELSE
+			r ← r.right
+RETURN FALSE 
+
+*/
+
+bool bin_tree_find(BinTreeNode* tree, string target){
+	while(tree!=NULL){
+		if(tree->value==target){
+			return true;		
+		}else if(tree->value>target){
+			tree=tree->left;
+			}
+			else{
+				tree=tree->right;
+			}
+		
+	}
+	return false;
+}
 
 
 
@@ -118,10 +166,8 @@ int main(int argc, char *argv[])
   				
 	    		file>>word;
 	    		//path.push_back(word);
-	    		cout<<word<<endl;
 	    		if(counter==0){
-
-					tree_insert(0, word);
+	    			BinTreeNode* t = tree_insert(0, word);
 	    			counter=counter+1;
 
   				}else{
@@ -130,12 +176,14 @@ int main(int argc, char *argv[])
 	    			counter=counter+1;
 
   				}
+
+	    		cout<<word<<endl;
 	 		}
 
     		//cout<<path[0]<<endl;;
 		}
   	file.close();
-  	in_order(t);
+  	//in_order(t);
   	cout<<counter<<endl;
 /*
 	BinTreeNode* t = tree_insert(0, 7);
