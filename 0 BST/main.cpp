@@ -11,24 +11,26 @@
 //#include "stdafx.h"
 
 #include <iostream>
-using namespace std;
 #include <string> // String Library
 #include <string.h>// string functions
-#include <climits> // for INT_MAX limits that can fix possible bugs from User Input
+#include <climits> //can fix possible bugs from User Input
 #include <limits>
 #include <vector>
+#include <fstream>
 
-#include <ctype.h>
 #include "colors.h"
 
+using namespace std;
+
 class BinTreeNode {
+	//class provided by Dr.Diana
 public:
-	BinTreeNode(int value) {
+	BinTreeNode(auto value) {
 		this->value = value;
 		this->left = NULL;
 		this->right = NULL;
 	}
-	int value;
+	string value;
 	BinTreeNode* left;
 	BinTreeNode* right;
 
@@ -39,7 +41,8 @@ public:
 
 
 
-BinTreeNode* tree_insert(BinTreeNode* tree, int item) {
+BinTreeNode* tree_insert(BinTreeNode* tree, auto item) {
+	//function provided by Dr.Diana
 	if (tree == NULL)
 		tree = new BinTreeNode(item);
 
@@ -47,6 +50,7 @@ BinTreeNode* tree_insert(BinTreeNode* tree, int item) {
 		if (item < tree->value)
 			if (tree->left == NULL)
 				tree->left = new BinTreeNode(item);
+
 			else
 				tree_insert(tree->left, item);
 		else
@@ -64,11 +68,12 @@ BinTreeNode* tree_insert(BinTreeNode* tree, int item) {
 
 
 void postorder(BinTreeNode* tree) {
+	//function provided by Dr.Diana
 	if (tree->left != NULL)
 		postorder(tree->left);
 	if (tree->right != NULL)
 		postorder(tree->right);
-	cout << tree->value <<" POST ORDER" << endl;
+
 
 }
 
@@ -78,11 +83,15 @@ void postorder(BinTreeNode* tree) {
 
 
 
-
+/**
+	* function provided by Dr.Diana
+	* Order input in the tree
+	*/
 void in_order(BinTreeNode* tree) {
+	
 	if (tree->left != NULL)
 		in_order(tree->left);
-	cout << tree->value <<" IN ORDER" << endl;
+
 	if (tree->right != NULL)
 		in_order(tree->right);
 }
@@ -96,24 +105,47 @@ void in_order(BinTreeNode* tree) {
 
 int main(int argc, char *argv[])
 {
-	//loadGrafic();
 
+	string word;
+	int counter=0;
+	BinTreeNode* t;
+	//http://www.cplusplus.com/reference/fstream/ifstream/
+	ifstream file;
+  	file.open ("text.txt");
+  		if (file.is_open()) 
+  		{
+  			while (!file.eof()) {
+  				
+	    		file>>word;
+	    		//path.push_back(word);
+	    		cout<<word<<endl;
+	    		if(counter==0){
+
+					tree_insert(0, word);
+	    			counter=counter+1;
+
+  				}else{
+					
+					tree_insert(t, word);
+	    			counter=counter+1;
+
+  				}
+	 		}
+
+    		//cout<<path[0]<<endl;;
+		}
+  	file.close();
+  	in_order(t);
+  	cout<<counter<<endl;
+/*
 	BinTreeNode* t = tree_insert(0, 7);
-	cout<<t->value<<endl;
 	tree_insert(t, 10);
-	cout<<t->value<<endl;
 	tree_insert(t, 5);
-	cout<<t->value<<endl;
 	tree_insert(t, 2);
-	cout<<t->value<<endl;
 	tree_insert(t, 35);
-	cout<<t->value<<endl;
 	tree_insert(t, 3);
-	cout<<t->value<<endl;
 	tree_insert(t, 4);
-	cout<<t->value<<endl;
 	tree_insert(t, 11);
-	cout<<t->value<<endl;
-	in_order(t);
+	in_order(t);*/
 	return 0;
 }
