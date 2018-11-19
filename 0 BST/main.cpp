@@ -8,7 +8,7 @@
 */ 
 
 
-//#include "stdafx.h"
+//#include "stdafx.h" no work on linux - windows library
 
 #include <iostream>
 #include <string> // String Library
