@@ -40,28 +40,22 @@ class graph{
 
 
 int main(){
-	int numPath;
-	int number_VE;
+	int node;
+
 	vector<string> vert_edges;
-	cout<<string(10,' ')<<"How many path will you insert?"<<endl;
-	cin>>numPath;
+
+	cout<<string(10,' ')<<GREEN_TEXT("Identify the nodes ?")<<endl;
+	cout<<string(5,' ')<<GREEN_TEXT("Seperate by space example -> ")<<RED_TEXT("1 2 3 4 5 6")<<endl;
+	cin>>node;
 	while (cin.fail())
 	{
 		cin.clear(); // clear input buffer to restore cin to a usable state
 		cin.ignore(INT_MAX, '\n'); // ignore last input
-		cout<<RED_TEXT("You can only input a single number.")<<endl;
-		cout<<string(10,' ')<<"How many path will you insert?"<<endl;
-		cin>>numPath;
-	}
-		cin.clear(); 
-		cin.ignore(INT_MAX, '\n');
-	while(){
-
-
-		cout<<string(10,' ')<<"Insert the "<<x+1<<" path"<<endl;
-		cin.getline(number_VE, sizeof(number_VE));
+		cout<<string(10,' ')<<GREEN_TEXT("Identify the nodes ?")<<endl;
+		cout<<string(5,' ')<<GREEN_TEXT("Seperate by space example -> ")<<RED_TEXT("1 2 3 4 5 6")<<endl;
 
 	}
+	
 
 
 

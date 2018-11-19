@@ -1,8 +1,8 @@
 //Dev
-/* Version Control : Nothing done , only sample from moodle , add / delete nodes on the BST
+/* Version Control :
 		KIS Design [x]
 		read/understand this sample [x]
-		implement add node to tree [ ]
+		implement add node to tree [x]
 		implement remove node to tree [ ]
 		
 */ 
@@ -15,6 +15,7 @@
 #include <string.h>// string functions
 #include <climits> //can fix possible bugs from User Input
 #include <limits>
+#include <array>
 #include <vector>
 #include <fstream>
 
@@ -25,7 +26,7 @@ using namespace std;
 class BinTreeNode {
 	//class provided by Dr.Diana
 public:
-	BinTreeNode(auto value) {
+	BinTreeNode(auto& value) {
 		this->value = value;
 		this->left = NULL;
 		this->right = NULL;
@@ -35,12 +36,53 @@ public:
 	BinTreeNode* right;
 
 };
+vector <string> listWord;
 
-/*
-questions:
-where tree is saved?
-*/
 
+struct wordCss{
+
+
+	bool checkFreq(auto& path,string word)
+	{
+
+		for(int x=0; x <= path.size();x++)
+		{
+			if(path[x]==word)
+			{
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	void freqList(auto& dupli,auto& list){
+
+
+		string matrixWords [list.size()][1];
+
+		for(int x=0; x<=list.size()-1;x++){
+
+			matrixWords[x][0]=list[x];
+			matrixWords[x][1]="1";
+			for(int y=0; y<=dupli.size();y++){
+
+				if(dupli[y]==matrixWords[x][0]){
+
+					matrixWords[x][1]=to_string(stoi(matrixWords[x][1])+1);
+
+				}
+
+
+			}
+
+		cout<<matrixWords[x][0]<<BLUE_TEXT(":")<<matrixWords[x][1]<<endl;
+
+		}
+
+	}
+
+};
 
 
 
@@ -68,36 +110,37 @@ BinTreeNode* tree_insert(BinTreeNode* tree, auto item) {
 
 
 
+/**
+	* function provided by Dr.Diana
+	* Order input in the tree
+	*/
+void in_order(BinTreeNode* tree) {
+
+	if (tree->left != NULL)
+		in_order(tree->left);
+
+	cout<<tree->value<<endl;
+
+	if (tree->right != NULL)
+		in_order(tree->right);
+}
+
+
 
 
 void postorder(BinTreeNode* tree) {
 	//function provided by Dr.Diana
+	cout<<tree->value<<endl;
+
 	if (tree->left != NULL)
 		postorder(tree->left);
+
 	if (tree->right != NULL)
 		postorder(tree->right);
 
 
 }
 
-
-
-
-
-
-
-/**
-	* function provided by Dr.Diana
-	* Order input in the tree
-	*/
-void in_order(BinTreeNode* tree) {
-	
-	if (tree->left != NULL)
-		in_order(tree->left);
-
-	if (tree->right != NULL)
-		in_order(tree->right);
-}
 
 /*
 
@@ -133,10 +176,12 @@ RETURN FALSE
 
 */
 
-bool bin_tree_find(BinTreeNode* tree, string target){
+string bin_tree_find(BinTreeNode* tree, string target){
+	cout<<"Find: "<<target<<endl;
 	while(tree!=NULL){
 		if(tree->value==target){
-			return true;		
+			cout<<"Found"<<endl;
+			return tree->value;		
 		}else if(tree->value>target){
 			tree=tree->left;
 			}
@@ -145,55 +190,52 @@ bool bin_tree_find(BinTreeNode* tree, string target){
 			}
 		
 	}
-	return false;
+	cout<<"Not Found"<<endl;
+	return "false";
 }
-
-
 
 
 int main(int argc, char *argv[])
 {
-
+	int op;
 	string word;
-	int counter=0;
-	BinTreeNode* t;
-	//http://www.cplusplus.com/reference/fstream/ifstream/
 	ifstream file;
+	wordCss funcWord;
+	vector<string> dupliWord;
+
   	file.open ("text.txt");
-  		if (file.is_open()) 
-  		{
-  			while (!file.eof()) {
-  				
-	    		file>>word;
-	    		//path.push_back(word);
-	    		if(counter==0){
-	    			BinTreeNode* t = tree_insert(0, word);
-	    			counter=counter+1;
+		file>>word;
+		listWord.push_back(word);
+		BinTreeNode* t = tree_insert(0, word);
 
-  				}else{
-					
-					tree_insert(t, word);
-	    			counter=counter+1;
+		while(file>>word){
+			cout<<BLUE_TEXT("Inserting ->")<<word<<endl;
 
-  				}
+			if(funcWord.checkFreq(listWord,word)==true){
+				cout<<RED_TEXT("Duplicate word found: ")<<word<<endl;
+				dupliWord.push_back(word);
+			}else{
 
-	    		cout<<word<<endl;
-	 		}
-
-    		//cout<<path[0]<<endl;;
+				listWord.push_back(word);
+				tree_insert(t,word);
+				}
 		}
   	file.close();
-  	//in_order(t);
-  	cout<<counter<<endl;
-/*
-	BinTreeNode* t = tree_insert(0, 7);
-	tree_insert(t, 10);
-	tree_insert(t, 5);
-	tree_insert(t, 2);
-	tree_insert(t, 35);
-	tree_insert(t, 3);
-	tree_insert(t, 4);
-	tree_insert(t, 11);
-	in_order(t);*/
+
+
+
+  	//Menu choosing 
+  	//Frequency of words
+  	//Inorder of words
+  	//Postorder of words
+
+
+  	cout<<RED_TEXT("Frequency List : ")<<endl;
+  	funcWord.freqList(dupliWord,listWord);
+  	cout<<RED_TEXT("In Order : ")<<endl;
+  	in_order(t);
+  	cout<<RED_TEXT("Post Order : ")<<endl;
+  	postorder(t);
+
 	return 0;
 }
