@@ -5,6 +5,10 @@ DEV:
 		handle user input [x]
 		create adjant table for user path input [ ]
 		function saying if that vertice is connect to other [ ]
+
+
+
+		some bugus, output of same thing dont know yet -> tomorrow fix 
  */
 
 #include <iostream>
@@ -34,8 +38,8 @@ public:
 
 	//https://www.geeksforgeeks.org/program-extract-words-given-string/
 	istringstream iss(vertList);
-	    copy(istream_iterator<int>(iss),
-	    istream_iterator<int>(),
+	    copy(istream_iterator<unsigned int>(iss),
+	    istream_iterator<unsigned int>(),
 	    back_inserter(vert_node));
 
 	    
@@ -54,7 +58,7 @@ public:
 
 
 int main(){
-	int node;
+	unsigned int node;
 	string numVert;
 	graph gra;
 	cout<<string(10,' ')<<GREEN_TEXT("Identify the vertices")<<endl;
@@ -80,10 +84,7 @@ int main(){
 
 		for(int y=0;y<=vert_node.size();y++){
 
-
 			graphMatrix[0][y+1]=vert_node[y];
-
-
 		}
 
 	}
@@ -93,10 +94,7 @@ int main(){
 
 		for(int y=0;y<=vert_node.size();y++){
 
-
 			cout<<graphMatrix[x][y]<<endl;
-
-
 		}
 
 	}

@@ -26,16 +26,16 @@ using namespace std;
 
 class BinTreeNode {
 	//class provided by Dr.Diana
-public:
-	BinTreeNode(auto& value) {
-		this->value = value;
-		this->left = NULL;
-		this->right = NULL;
-	}
-	string value;
-	BinTreeNode* left;
-	BinTreeNode* right;
-	vector <string> listWord;
+	public:
+		BinTreeNode(auto& value) {
+			this->value = value;
+			this->left = NULL;
+			this->right = NULL;
+		}
+		string value;
+		BinTreeNode* left;
+		BinTreeNode* right;
+		vector <string> listWord;
 
 };
 
@@ -85,7 +85,7 @@ struct wordCss{
 			cout<<"->"<<YELLOW_TEXT(<<tree->value<<);
 			if(tree->value==target){
 				cout<<endl;
-				cout<<"Found "<<tree->value<<endl;
+				cout<<GREEN_TEXT("Found :")<<tree->value<<endl;
 				return tree->value;		
 			}else if(tree->value>target){
 				tree=tree->left;
@@ -97,7 +97,7 @@ struct wordCss{
 		}
 
 		cout<<endl;
-		cout<<RED_TEXT("Not Found")<<endl;
+		cout<<RED_TEXT("Not Found :")<<target<<endl;
 		return "false";
 	}
 
@@ -244,20 +244,18 @@ int main(int argc, char *argv[])
 
 	cin.clear();
 	cin.get();
-	cin.ignore(INT_MAX,'\n');
 
   	cout<<RED_TEXT("Post Order : ")<<endl;
   	funcWord.postorder(t);
 
 	cin.clear();
 	cin.get();
-	cin.ignore(INT_MAX,'\n');
 
+  	funcWord.bin_tree_find(t,"traversal");
   	funcWord.bin_tree_find(t,"cynical");
 
 	cin.clear();
 	cin.get();
-	cin.ignore(INT_MAX,'\n');
 
   	cout<<RED_TEXT("Frequency List : ")<<endl;
   	funcWord.freqList(dupliWord,t->listWord);

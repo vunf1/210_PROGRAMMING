@@ -16,9 +16,18 @@ __"sudo chmod -R 755"__
 
 
 ##### Coursework Backlog
+> - [ ] 3 GRAPH - implement a function isPath(v, w) ->(where v and w are vertices in the graph to check if there is a path between the two nodes. The path found will be printed to a text file as a sequence of integer numbers (the node values));
+
+> - [ ] 4 GRAPH - implement a function isConnected(G) to check whether or not the graph is strongly connected. The output should be simply 'yes' or 'no';
 
 
-> - [ ] 3 GRAPH - ;
+Adapt the previous graph
+> - [ ] 5 GRAPH - Implement BFS;
+> - [ ] 5 GRAPH - Implement DFS;
+> - [ ] 5 GRAPH - Save the nodes traversed in sequence to a text file;
+
+
+> - [ ] 6 GRAPH - structure to support weighted connections and implement Dijkstra’s algorithm.
 
 ##### Coursework On-Board
 
@@ -38,7 +47,7 @@ __"sudo chmod -R 755"__
 
 ---
 
-> - [x] 3 GRAPH - ask how many vertices, handle the input on the 2d matrix;
+> - [x] 3 GRAPH - ask how many vertices, handle the input  2d matrix;
 
 :exclamation: :exclamation: Important for IPP/Viva :computer:
 
