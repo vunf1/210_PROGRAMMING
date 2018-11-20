@@ -3,6 +3,7 @@
 		KIS Design [x]
 		read/understand this sample [x]
 		implement add node to tree [x]
+		implement find node on tree [x]
 		implement remove node to tree [ ]
 		
 */ 
@@ -34,9 +35,9 @@ public:
 	string value;
 	BinTreeNode* left;
 	BinTreeNode* right;
+	vector <string> listWord;
 
 };
-vector <string> listWord;
 
 
 struct wordCss{
@@ -72,13 +73,64 @@ struct wordCss{
 					matrixWords[x][1]=to_string(stoi(matrixWords[x][1])+1);
 
 				}
-
-
 			}
-
 		cout<<matrixWords[x][0]<<BLUE_TEXT(":")<<matrixWords[x][1]<<endl;
-
 		}
+	}
+
+	// travel until found correct?
+	string bin_tree_find(BinTreeNode* tree, string target){
+		cout<<"Find: "<<target<<endl;
+		while(tree!=NULL){
+			cout<<"->"<<YELLOW_TEXT(<<tree->value<<);
+			if(tree->value==target){
+				cout<<endl;
+				cout<<"Found "<<tree->value<<endl;
+				return tree->value;		
+			}else if(tree->value>target){
+				tree=tree->left;
+				}
+				else{
+					tree=tree->right;
+				}
+			
+		}
+
+		cout<<endl;
+		cout<<RED_TEXT("Not Found")<<endl;
+		return "false";
+	}
+
+
+
+	/**
+		* function provided by Dr.Diana
+		* Order input in the tree
+		*/
+	void in_order(BinTreeNode* tree) {
+
+		if (tree->left != NULL)
+			in_order(tree->left);
+
+		cout<<GREEN_TEXT(<<tree->value<<)<<endl;
+
+		if (tree->right != NULL)
+			in_order(tree->right);
+	}
+
+
+
+
+	void postorder(BinTreeNode* tree) {
+		//function provided by Dr.Diana
+		cout<<MAGENTA_TEXT(<<tree->value<<)<<endl;
+
+		if (tree->left != NULL)
+			postorder(tree->left);
+
+		if (tree->right != NULL)
+			postorder(tree->right);
+
 
 	}
 
@@ -109,37 +161,6 @@ BinTreeNode* tree_insert(BinTreeNode* tree, auto item) {
 
 
 
-
-/**
-	* function provided by Dr.Diana
-	* Order input in the tree
-	*/
-void in_order(BinTreeNode* tree) {
-
-	if (tree->left != NULL)
-		in_order(tree->left);
-
-	cout<<tree->value<<endl;
-
-	if (tree->right != NULL)
-		in_order(tree->right);
-}
-
-
-
-
-void postorder(BinTreeNode* tree) {
-	//function provided by Dr.Diana
-	cout<<tree->value<<endl;
-
-	if (tree->left != NULL)
-		postorder(tree->left);
-
-	if (tree->right != NULL)
-		postorder(tree->right);
-
-
-}
 
 
 /*
@@ -176,23 +197,10 @@ RETURN FALSE
 
 */
 
-string bin_tree_find(BinTreeNode* tree, string target){
-	cout<<"Find: "<<target<<endl;
-	while(tree!=NULL){
-		if(tree->value==target){
-			cout<<"Found"<<endl;
-			return tree->value;		
-		}else if(tree->value>target){
-			tree=tree->left;
-			}
-			else{
-				tree=tree->right;
-			}
-		
-	}
-	cout<<"Not Found"<<endl;
-	return "false";
-}
+
+
+
+
 
 
 int main(int argc, char *argv[])
@@ -205,18 +213,19 @@ int main(int argc, char *argv[])
 
   	file.open ("text.txt");
 		file>>word;
-		listWord.push_back(word);
 		BinTreeNode* t = tree_insert(0, word);
+
+		t->listWord.push_back(word);
 
 		while(file>>word){
 			cout<<BLUE_TEXT("Inserting ->")<<word<<endl;
 
-			if(funcWord.checkFreq(listWord,word)==true){
+			if(funcWord.checkFreq(t->listWord,word)==true){
 				cout<<RED_TEXT("Duplicate word found: ")<<word<<endl;
 				dupliWord.push_back(word);
 			}else{
 
-				listWord.push_back(word);
+				t->listWord.push_back(word);
 				tree_insert(t,word);
 				}
 		}
@@ -225,17 +234,33 @@ int main(int argc, char *argv[])
 
 
   	//Menu choosing 
-  	//Frequency of words
   	//Inorder of words
   	//Postorder of words
+  	//Frequency of words
+  	//Find word and out path travel
 
+  	cout<<RED_TEXT("In Order : ")<<endl;
+  	funcWord.in_order(t);
+
+	cin.clear();
+	cin.get();
+	cin.ignore(INT_MAX,'\n');
+
+  	cout<<RED_TEXT("Post Order : ")<<endl;
+  	funcWord.postorder(t);
+
+	cin.clear();
+	cin.get();
+	cin.ignore(INT_MAX,'\n');
+
+  	funcWord.bin_tree_find(t,"cynical");
+
+	cin.clear();
+	cin.get();
+	cin.ignore(INT_MAX,'\n');
 
   	cout<<RED_TEXT("Frequency List : ")<<endl;
-  	funcWord.freqList(dupliWord,listWord);
-  	cout<<RED_TEXT("In Order : ")<<endl;
-  	in_order(t);
-  	cout<<RED_TEXT("Post Order : ")<<endl;
-  	postorder(t);
+  	funcWord.freqList(dupliWord,t->listWord);
 
 	return 0;
 }

@@ -23,7 +23,7 @@ using namespace std;
 
 
 #include "colors.h"
-vector<string> vert_node;
+vector<int> vert_node;
 class graph{
 public:
 
@@ -34,7 +34,9 @@ public:
 
 	//https://www.geeksforgeeks.org/program-extract-words-given-string/
 	istringstream iss(vertList);
-	    copy(istream_iterator<string>(iss),istream_iterator<string>(),     back_inserter(vert_node));
+	    copy(istream_iterator<int>(iss),
+	    istream_iterator<int>(),
+	    back_inserter(vert_node));
 
 	    
 
@@ -79,7 +81,7 @@ int main(){
 		for(int y=0;y<=vert_node.size();y++){
 
 
-			graphMatrix[0][y+1]=vert_node[x];
+			graphMatrix[0][y+1]=vert_node[y];
 
 
 		}
@@ -89,11 +91,10 @@ int main(){
 
 	for(int x=0;x<=vert_node.size();x++){
 
-			cout<<graphMatrix[x][0]<<endl;
 		for(int y=0;y<=vert_node.size();y++){
 
 
-			cout<<graphMatrix[0][y]<<endl;
+			cout<<graphMatrix[x][y]<<endl;
 
 
 		}

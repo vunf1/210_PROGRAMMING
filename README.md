@@ -17,14 +17,15 @@ __"sudo chmod -R 755"__
 
 ##### Coursework Backlog
 
-> - [ ] 1 BST - output the path traversed in determining the answer;
 
-> - [ ] 2 GRAPH - ;
-> - [ ] 2 GRAPH - ;
+> - [ ] 3 GRAPH - ;
 
 ##### Coursework On-Board
 
-> - [ ] 1 BST -  function delete_node;
+> - [ ] 2 BST -  function delete_node;
+
+---
+
 
 ##### Coursework Finish/Release
 
@@ -33,7 +34,11 @@ __"sudo chmod -R 755"__
 > - [x] 1 BST - extract words insert on tree;
 > - [x] 1 BST - Printing the tree in in-order;
 > - [x] 1 BST - function frequency of words;
+> - [x] 1 BST - output the path traversed ;
 
+---
+
+> - [x] 3 GRAPH - ask how many vertices, handle the input on the 2d matrix;
 
 :exclamation: :exclamation: Important for IPP/Viva :computer:
 
