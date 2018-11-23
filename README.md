@@ -7,7 +7,7 @@ __"sudo chmod -R 755"__
 
 ### BUGS FOUND
 
-
+bug after trying to insert in the matrix - random memory leaks 
 
 ---
 
@@ -16,6 +16,7 @@ __"sudo chmod -R 755"__
 
 
 ##### Coursework Backlog
+
 > - [ ] 3 GRAPH - implement a function isPath(v, w) ->(where v and w are vertices in the graph to check if there is a path between the two nodes. The path found will be printed to a text file as a sequence of integer numbers (the node values));
 
 > - [ ] 4 GRAPH - implement a function isConnected(G) to check whether or not the graph is strongly connected. The output should be simply 'yes' or 'no';
@@ -30,6 +31,8 @@ Adapt the previous graph
 > - [ ] 6 GRAPH - structure to support weighted connections and implement Dijkstra’s algorithm.
 
 ##### Coursework On-Board
+
+> - [ ] GRAPH - USER INPUT HANDLE ('False');
 
 > - [ ] 2 BST -  function delete_node;
 

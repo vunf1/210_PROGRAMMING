@@ -1,4 +1,9 @@
+/*https://stackoverflow.com/questions/2616906/how-do-i-output-coloured-text-to-a-linux-terminal
+//
 
+
+//
+*/
 #ifndef COLOR_H
 #define COLOR_H
 
