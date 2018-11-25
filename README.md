@@ -32,10 +32,9 @@ Adapt the previous graph
 
 ##### Coursework On-Board
 
-> - [ ] GRAPH - USER INPUT HANDLE ('False');
 
 > - [ ] 2 BST -  function delete_node;
-
+> - [x] GRAPH - isConnected (Strongly -> all vertices have a connection);
 ---
 
 
@@ -49,13 +48,21 @@ Adapt the previous graph
 > - [x] 1 BST - output the path traversed ;
 
 ---
-
-> - [x] 3 GRAPH - ask how many vertices, handle the input  2d matrix;
+> - [x] GRAPH - USER INPUT HANDLE ('False');
+> - [x] GRAPH - ask how many vertices, handle the input  2d matrix;
+> - [x] GRAPH - addEdge;
+> - [x] GRAPH - isConnected (Vertice to Vertice);
 
 :exclamation: :exclamation: Important for IPP/Viva :computer:
 
 ### Review
 > - [ ] Algorithm
+
+
+### EXTRAS
+> - [x] Colour Output
+> - [x] Dinamic Output
+> - [ ] Handle all Possible 'false' input
 
 ### Author
 

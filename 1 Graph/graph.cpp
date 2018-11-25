@@ -17,18 +17,46 @@ DEV:
 #include <iterator>//for split string into words separelaty to compare with a vector
 #include <sstream>//pre-'function' (make iterator easy to read) 
 #include <cstring>
-
+#include <algorithm>
 #include <string> // String Library
 #include <string.h>// string functions
 #include <climits> // for INT_MAX limits that can fix possible bugs from User Input
 #include <limits>
 #include <vector>
+
+
+// ioctrl provides device-specific low-level control
+//need for get max width and height
+#include <sys/ioctl.h>
+#include <stdio.h> //Library outdated from C, helps preprocessor the compiler
+//function getMax...
+
 using namespace std;
 
 
 #include "colors.h"
 
 	
+
+/*
+// Author: John T
+//  Jun 21 2009 at 1:40
+//	link: https://stackoverflow.com/a/1022961
+*/
+int getmaxHeight(){
+
+
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w); 
+	return w.ws_row;
+
+}
+int getmaxWidth(){
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+	return w.ws_col;
+
+}
 
 class graph{
 public:
@@ -47,17 +75,59 @@ public:
                 matrix[x] = new int [vert_node.size()];
                 
                 for(int y = 0; y < vert_node.size(); y++){
+                	if(x==y){
                 
-                    matrix[x][y] = 0;
+                    	matrix[x][y] = -1;
+
+
+                	}else{
+                
+                    	matrix[x][y] = 0;
+
+                	}
                 }
             }
 	}
 
+
+
+
+
+	
+	bool addEdge(int oriVertice,int edgeVertice){
+		if(oriVertice == edgeVertice){
+			return false;
+		}
+
+		for(int x=0;x<=this->vert_node.size()-1;x++){	
+					for(int y=0;y<=this->vert_node.size()-1;y++){
+						//cout<<"WOW:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+						if(oriVertice==this->vert_node[x] && edgeVertice==this->vert_node[y]){
+							//cout<<"addEdge:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+							if(this->matrix[x][y]==1){
+								return false;
+							}
+							//unweight graph
+							this->matrix[x][y]=1;
+							this->matrix[y][x]=1;
+						}
+
+					}
+			}
+		return true;
+	}
+
+
+
+
+
 	/*
 	//https://www.geeksforgeeks.org/extract-integers-string-c/
 	//Author:  Prakhar Agrawal
+	//
+	//Use this function for identify edges - 1 more argument as 'Option'=1(activateExtractionInt4Vector) 0(activateExtractionInt2Edges==1)
 	*/
-	void extractIntegerWords(string str) 
+	bool extractIntegerWords(string str,int op) 
 	{ 
 	    stringstream ss;     
 	  
@@ -66,18 +136,54 @@ public:
 	  
 	    string temp; 
 	    int found; 
+	    vector <int> send2Add;
 	 	
 	    /* Running loop till the end of the stream */
 	    while (!ss.eof()) { 
 	  
-	        /* extracting word by word from stream */
-	        ss >> temp; 
 	  
 	        /* Checking the given word is integer or not */
-	        if (stringstream(temp) >> found) {
-	        	this->vert_node.push_back(found);
-	          }
-	        temp = ""; 
+	        if(op==0){
+	        /* extracting word by word from stream */
+	        	ss >> temp; 
+		        if (stringstream(temp) >> found) {
+		        	this->vert_node.push_back(found);
+		          }
+		        temp = "";
+
+	        }
+	        if(op==1){
+	        /* extracting word by word from stream */
+	        	ss >> temp; 
+		        if (stringstream(temp) >> found) {
+
+		        	send2Add.push_back(found);
+		          }
+
+		        temp = "";
+	        	
+	        } 
+	    }
+	    if(op==1){
+
+    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() && find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
+	    			if(send2Add[0]==send2Add[1]){
+
+						cout<<RED_TEXT("NOT ADDED - Same Vertice")<<endl;
+	    			}else{
+				    	if(addEdge(send2Add[0],send2Add[1])==true){
+
+		    				cout<<GREEN_TEXT("ADDED")<<endl;
+				    		
+				    	}else{
+				    		cout<<RED_TEXT("ALREADY CONNECTED")<<endl;
+				    	}	
+
+	    			}
+		    	} else {
+					cout<<RED_TEXT("NOT ADDED - Not a Vertice")<<endl;
+				    return false;
+			}
 	    } 
 	} 
 
@@ -85,7 +191,7 @@ public:
 // extract from 
 //
 */
-	void splitVertice2Edge(auto& inputVerList){
+	bool splitVertice2Edge(auto& inputVerList){
 
 	stringstream userInput;
 
@@ -102,8 +208,11 @@ public:
 	        cout<<"TEMP[0]:"<<temp[0]<<endl;
 	        cout<<"TEMP[1]:"<<temp[1]<<endl;
 	        cout<<"TEMP[2]:"<<temp[2]<<endl;
+	        
+	        //addEdge(temp[0],temp[2]);
 
-	  		
+	        /*if(addEdge(temp[0],temp[2])==true){continue;}else{cout<<temp[0]<<" or "<<temp[2]<<" is invalid for this matrix"<<endl; return false;}
+	  		*/
 	  		for(int x=0;x<=2;x++ ){
 	  		temp[x]=' ';
 	  		}
@@ -111,81 +220,76 @@ public:
 
 
 	}
-	bool addEdge(int oriVertice,int edgeVertice){
-		if(oriVertice<0 || edgeVertice<0){
-			return false;
-		}else{
-			for(int x=1;x<=this->vert_node.size();x++){
-					if(oriVertice==this->vert_node[x]){
-						for(int y=1;y<=this->vert_node.size();y++){
-							if(edgeVertice==this->vert_node[y]){
-								matrix[x][y]=1;
-							}
 
-						}
-					}
-				}
-
-			}
-
-
-
-
-	}
 
 
 	void showMatrix(){
 
+		/*for(int x=0;x<=this->vert_node.size()-1;x++){
+			if(vert_node[0]){
+			cout<<string((getmaxWidth()/getmaxWidth())+3,' ')<<vert_node[x];
+
+			}else{
+
+			cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<vert_node[x];
+
+			}
+		}
+		cout<<endl;
+*/
 		for(int x=0;x<=this->vert_node.size()-1;x++){
+			//cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<vert_node[x];
 			for(int y=0;y<=this->vert_node.size()-1;y++){
-				cout<<matrix[x][y];
+				cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<matrix[x][y];
 			}
 			cout<<endl;
 		}
 
 	}
-	void isConnected(int target){
-
-	}	
 
 
 
 
-	void splitIntoVert(auto& vertList, auto& delimiter ){
-		/*
-		// Not in use.
-		// This reference helps me a with logic for the graph.
-		*/
-
-		/*
-		/	split the string use [SPACE](iss) to create substrings and then add to the vector 
-		/	Problem found:
-		/		Difficult to manipulate after insert into a vector to find duplicate values
-		//https://www.geeksforgeeks.org/program-extract-words-given-string/
+	bool isConnectedEdge(int vertice,int edgeTarget){
+		//Check if vertices are connected;
 
 
-	unsigned int counter=0;
-	istringstream iss(vertList);
-	    copy(istream_iterator<unsigned int>(iss),
-	    istream_iterator<unsigned int>(),
-	    back_inserter(this->vert_node));
-		*/
+		for(int x=0;x<=this->vert_node.size()-1;x++){	
+					for(int y=0;y<=this->vert_node.size()-1;y++){
+						//cout<<"WOW:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+						if(vertice==this->vert_node[x] && edgeTarget==this->vert_node[y]){
+							//cout<<"addEdge:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+							if(this->matrix[x][y]==1){
+								return true;
+							}
+						}
+
+					}
+			}
+		return false;
+
+	}
 
 
-
-	    	for(int x=0;x<=this->vert_node.size()-1;x++){
-	    		cout<<this->vert_node[x]<<endl;
-
-
-	    	}
-	    /*
-	    http://www.cplusplus.com/forum/beginner/147920/
-	    Author: Esslercuffi
-		Nov 15, 2014 at 7:45pm
-			'Before pushing the name and scores inside the while loop, insert another loop that will run through the current vectors and check if the entered name already exists. If it exists, display error message. If it doesn't, push the new values onto vectors.'
-	    */
+	bool isConnectedFull(){
+		//DO
+		//Check if grapg is strongly connected (all vertices have a edge)
+		//create variable to check a bool for each vertice if found a 1 mean have connection with other and push to the variable as visited and go next to other vertice if a vertice is missing mean the graph is not strongly connected so compare at the end the variable with vert_node to see if is some vertice is missing
 
 
+		for(int x=0;x<=this->vert_node.size()-1;x++){	
+					for(int y=0;y<=this->vert_node.size()-1;y++){
+						//cout<<"WOW:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+						if(vertice==this->vert_node[x] && edgeTarget==this->vert_node[y]){
+							//cout<<"addEdge:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
+							if(this->matrix[x][y]==1){
+								return true;
+							}
+						}
+
+					}
+			}
+		return false;
 
 	}
 
@@ -197,35 +301,66 @@ public:
 
 int main(){
 
+
 	string numVert;	
 	graph gra;
-	cout<<string(10,' ')<<GREEN_TEXT("Identify the vertices")<<endl;
-	cout<<string(5,' ')<<GREEN_TEXT("Seperate by space example -> ")<<RED_TEXT("1 2 3 4 5 6")<<endl;
+	cout<<string(getmaxWidth()/3,' ')<<GREEN_TEXT("Identify the vertices")<<endl;
+	cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Seperate by space example -> ")<<RED_TEXT("1 2 3 4 5 6")<<endl;
 	getline(cin,numVert);
 
-	gra.extractIntegerWords(numVert);
+	
+	//DINAMIC
+	gra.extractIntegerWords(numVert,0);
+	
+	//STATIC
+	//gra.extractIntegerWords("11 22 33",0);
+
 	gra.matrixGraph();
 	gra.showMatrix();
 
-	cout<<string(10,' ')<<GREEN_TEXT("Vertices Identified")<<endl;
-	cout<<string(10,' ')<<GREEN_TEXT(" -> ");
+	cout<<string(getmaxWidth()/3,' ')<<GREEN_TEXT("Vertices Identified")<<endl;
+	cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT(" -> ");
 	for (int x=0;x<=gra.vert_node.size()-1; x++)
 	{
 		cout<<" "<<gra.vert_node[x];
 	}
 	cout<<endl;
+	cout<<string(getmaxWidth()/3,' ')<<GREEN_TEXT("Identify the edges")<<endl;
+	cout<<string(getmaxWidth()/6,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice) (Vertice_Edge) -> ")<<RED_TEXT("1 2")<<endl;
+	cout<<string(getmaxWidth()/3,' ')<<GREEN_TEXT("then press ENTER")<<endl;
+
+
+
 	numVert.empty();
-	cout<<string(10,' ')<<GREEN_TEXT("Identify the edges")<<endl;
-	cout<<string(5,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice),(Vertice_Edge) -> ")<<RED_TEXT("1,2 2,3")<<endl;
+
 	getline(cin,numVert);
-	gra.splitVertice2Edge(numVert);
-	//while(gra.splitVertice2Edge(numVert)==false){
+
+	//gra.splitVertice2Edge(numVert);
+	while(numVert!=""){
+
+		gra.extractIntegerWords(numVert,1);
+		getline(cin,numVert);
+
+	}
+
+
 	
+	gra.showMatrix();
+	if(gra.isConnectedEdge(2,1)==true){
 
-		//getline(cin,numVert);
+		cout<<GREEN_TEXT("Yes, That vertice is connected")<<endl;
+	}else{
 
-	//}
+		cout<<RED_TEXT("No, That vertice isn't connected")<<endl;
+	}
 
+	if(gra.isConnectedFull()==true){
+
+		cout<<GREEN_TEXT("Yes, This graph is strongly connected")<<endl;
+	}else{
+
+		cout<<RED_TEXT("No, This graph isn't strongly connected")<<endl;
+	}
 
 
 
