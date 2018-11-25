@@ -8,9 +8,9 @@ __"sudo chmod -R 755"__
 ### BUGS FOUND
 
 bug after trying to insert in the matrix - random memory leaks 
-
+*** stack smashing detected :
+FIX: put all matrix as a class data member 
 ---
-
 
 ### Development "Board"
 

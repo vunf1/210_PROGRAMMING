@@ -32,11 +32,30 @@ using namespace std;
 
 class graph{
 public:
-	vector<int> vert_node;	
-	/*
-	https://www.geeksforgeeks.org/extract-integers-string-c/
-	Author:  Prakhar Agrawal
+	vector<int> vert_node;
+    int **matrix;
+    
+    /*
+    // Inicialize matrix4Graph
+    //
+    */	
+	void matrixGraph(){
 
+            matrix = new int* [vert_node.size()];
+            for (int x = 0; x < vert_node.size(); x++){
+
+                matrix[x] = new int [vert_node.size()];
+                
+                for(int y = 0; y < vert_node.size(); y++){
+                
+                    matrix[x][y] = 0;
+                }
+            }
+	}
+
+	/*
+	//https://www.geeksforgeeks.org/extract-integers-string-c/
+	//Author:  Prakhar Agrawal
 	*/
 	void extractIntegerWords(string str) 
 	{ 
@@ -62,34 +81,27 @@ public:
 	    } 
 	} 
 
-
-
-
 /*
-// ADjancyList or Matrix - Probably implemnt second
+// extract from 
 //
 */
 	void splitVertice2Edge(auto& inputVerList){
 
-	stringstream ss;
-	int matrix[vert_node.size()][vert_node.size()];
+	stringstream userInput;
 
-	
 
-		ss << inputVerList; 
+		userInput << inputVerList; 
 	  
 	    char temp[2]; 
-
 	 	
-	    /* Running loop till the end of the stream(string) */
-	    while (!ss.eof()) { 
+	    /* Run loop until eo(f)->stream(string) */
+	    while (!userInput.eof()) { 
 	  
-	        /* extracting char by char to the stream */
-	        ss >> temp; 
+	        /* extract char by char to the stream */
+	        userInput >> temp; 
 	        cout<<"TEMP[0]:"<<temp[0]<<endl;
 	        cout<<"TEMP[1]:"<<temp[1]<<endl;
 	        cout<<"TEMP[2]:"<<temp[2]<<endl;
-	        matrix[temp[0]][temp[2]]=1;
 
 	  		
 	  		for(int x=0;x<=2;x++ ){
@@ -98,25 +110,52 @@ public:
 	    }
 
 
+	}
+	bool addEdge(int oriVertice,int edgeVertice){
+		if(oriVertice<0 || edgeVertice<0){
+			return false;
+		}else{
+			for(int x=1;x<=this->vert_node.size();x++){
+					if(oriVertice==this->vert_node[x]){
+						for(int y=1;y<=this->vert_node.size();y++){
+							if(edgeVertice==this->vert_node[y]){
+								matrix[x][y]=1;
+							}
 
-	for(int x=0;x<=this->vert_node.size()-1;x++ ){
+						}
+					}
+				}
 
-		for(int y=0;y<=this->vert_node.size()-1;y++ ){
-			cout<<matrix[x][y];		
+			}
+
+
+
+
+	}
+
+
+	void showMatrix(){
+
+		for(int x=0;x<=this->vert_node.size()-1;x++){
+			for(int y=0;y<=this->vert_node.size()-1;y++){
+				cout<<matrix[x][y];
+			}
+			cout<<endl;
 		}
-		cout<<endl;
-	}
-
-
-
-
 
 	}
+	void isConnected(int target){
+
+	}	
+
 
 
 
 	void splitIntoVert(auto& vertList, auto& delimiter ){
-
+		/*
+		// Not in use.
+		// This reference helps me a with logic for the graph.
+		*/
 
 		/*
 		/	split the string use [SPACE](iss) to create substrings and then add to the vector 
@@ -165,48 +204,27 @@ int main(){
 	getline(cin,numVert);
 
 	gra.extractIntegerWords(numVert);
-
-	int graphMatrix[gra.vert_node.size()-1][gra.vert_node.size()-1];
-
-	
+	gra.matrixGraph();
+	gra.showMatrix();
 
 	cout<<string(10,' ')<<GREEN_TEXT("Vertices Identified")<<endl;
 	cout<<string(10,' ')<<GREEN_TEXT(" -> ");
-	for(int x=0;x<=gra.vert_node.size()-1;x++ ){
-		cout<<gra.vert_node[x]<<" ";
+	for (int x=0;x<=gra.vert_node.size()-1; x++)
+	{
+		cout<<" "<<gra.vert_node[x];
 	}
 	cout<<endl;
 	numVert.empty();
 	cout<<string(10,' ')<<GREEN_TEXT("Identify the edges")<<endl;
-	cout<<string(5,' ')<<GREEN_TEXT("Seperate by space (Vertice),(Edge) -> ")<<RED_TEXT("1,2 2,3")<<endl;
-
+	cout<<string(5,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice),(Vertice_Edge) -> ")<<RED_TEXT("1,2 2,3")<<endl;
 	getline(cin,numVert);
-	/*
-	for(int x=0;x<=gra.vert_node.size()-1;x++){
-		
-		for(int y=0;y<=gra.vert_node.size()-1;y++){
-
-			graphMatrix[x][y]=0;
-			cout<<graphMatrix[x][y];
-		}cout<<endl;
-	}*/
 	gra.splitVertice2Edge(numVert);
+	//while(gra.splitVertice2Edge(numVert)==false){
+	
 
-/*
-	for(int x=0;x<=this->vert_node.size()-1;x++){
-		
-		for(int y=0;y<=this->vert_node.size()-1;y++){
-			cout<<graphMatrix[x][y];
+		//getline(cin,numVert);
 
-
-		}
-
-		cout<<endl;
-	}
-
-*/
-
-
+	//}
 
 
 
