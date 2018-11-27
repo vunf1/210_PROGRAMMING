@@ -34,7 +34,12 @@ Adapt the previous graph
 
 
 > - [ ] 2 BST -  function delete_node;
-> - [x] GRAPH - isConnected (Strongly -> all vertices have a connection);
+> - [ ] GRAPH - isConnected (Strongly -> all vertices have a connection);
+> - [ ] GRAPH - path between Vertices;
+> - [ ] GRAPH - Dijkstra's Algorithm ;
+> - [ ] GRAPH - DFS Algorithm ;
+> - [ ] GRAPH - BFS Algorithm ;
+> - [ ] GRAPH - Save the algorithm DFS/BFS to a text file;
 ---
 
 
@@ -46,6 +51,7 @@ Adapt the previous graph
 > - [x] 1 BST - Printing the tree in in-order;
 > - [x] 1 BST - function frequency of words;
 > - [x] 1 BST - output the path traversed ;
+> - [x] 1 BST -  PRE_ORDER ;
 
 ---
 > - [x] GRAPH - USER INPUT HANDLE ('False');
