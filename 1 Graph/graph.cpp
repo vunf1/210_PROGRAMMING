@@ -514,7 +514,8 @@ int main(){
 	//gra.isConnectedFull();
 	gra.isConnectedEdge(22,11);
 	gra.dijkstraAlgorithm();
-/*
+/* 
+
 	if(gra.isConnectedFull()==true){
 		cout<<GREEN_TEXT("Yes, This graph is strongly connected")<<endl;
 	}else{
