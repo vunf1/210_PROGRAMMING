@@ -23,7 +23,7 @@ DEV:
 #include <climits> // for INT_MAX limits that can fix possible bugs from User Input
 #include <limits>
 #include <vector>
-
+#include<bits/stdc++.h> 
 
 // ioctrl provides device-specific low-level control
 //need for get max width and height
@@ -78,6 +78,7 @@ class graph{
 public:
 	vector<int> vert_node;//Vertice Unique List
     int **matrix;
+    vector <int> adjList_[];
     
     /*
     // 
@@ -95,7 +96,7 @@ public:
                 for(int y = 0; y < vert_node.size(); y++){
                 	if(x==y){
                 
-                    	matrix[x][y] = 0;
+                    	matrix[x][y] = -1;
 
 
                 	}else{
@@ -113,7 +114,9 @@ public:
 
 	
 	bool addEdge(int oriVertice,int edgeVertice, int weight){
+
 		//indirected way and weight
+		//this type of graph is weighted/undirected 2--[w]--1 && 1--[w]--2
 
 		for(int x=0;x<=this->vert_node.size()-1;x++){	
 					for(int y=0;y<=this->vert_node.size()-1;y++){
@@ -124,6 +127,8 @@ public:
 								return false;
 							}else{
 								//weight graph/ indirected
+							    //adjList_[vert_node[x]].push_back(vert_node[y]); 
+							   // adjList_[vert_node[y]].push_back(vert_node[x]); 
 								this->matrix[x][y]=weight;
 								this->matrix[y][x]=weight;
 								return true;	
@@ -145,18 +150,13 @@ public:
 	//Availability: https://www.geeksforgeeks.org/extract-integers-string-c/
 	//
 	//
-	//Use this function for identify edges - 1 more argument as 'Option'=1(activateExtractionInt4Vector) 0(activateExtractionInt2Edges==1)
+	//Use this function to handle user input
 	*/
 	bool extractIntegerWords(string str,int op) 
 	{ 
 
-
-
-
-
 	    stringstream ss;     
 	  
-	    /* Storing the whole string into string stream */
 	    ss << str; 
 	  
 	    string temp; 
@@ -165,25 +165,26 @@ public:
 		string ans;
 
 	 	send2Add.clear();
-	    /* Running loop till the end of the stream */
+	    /* Handle Input*/
+	    // operation
+	    // 0 -  Input vertices list / matrix size
+	    // 1 - 	Input weight input handle true vertices / expected to have 3 int's
+	 	// 		--0 (Vertice Ori)	--1 (Vertice End)	--2 (Weight)			
+	    // 2 -	Input 2 vertices
 	    while (!ss.eof()) { 
 	  
 	  
-	        /* Checking the given word is integer or not */
 	        if(op==0){
-	        /* extracting word by word from stream */
 	        	ss >> temp; 
-		        if (stringstream(temp) >> found) {
+		        if (stringstream(temp) >> found){
 		        	this->vert_node.push_back(found);
 		          }
 		        temp = "";
 
 	        }
 	        if(op==1){
-
-	        /* extracting word by word from stream */
 	        	ss >> temp; 
-		        if (stringstream(temp) >> found) {
+		        if (stringstream(temp) >> found){
 
 		        	send2Add.push_back(found);
 		          }
@@ -196,7 +197,7 @@ public:
 	        	if(send2Add.size()>=3){
 	        		return false;
 	        	}
-		        if (stringstream(temp) >> found) {
+		        if (stringstream(temp) >> found){
 		        	send2Add.push_back(found);
 		          }
 		        temp = "";
@@ -205,7 +206,7 @@ public:
 	    }
 	    if(op==1){
 
-    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() && find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
+    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 																			&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
 
 	    			if(send2Add[0]==send2Add[1]){
 
@@ -259,8 +260,7 @@ public:
 				    return false;
 				}
 	    }
-
-	        if(op==2){
+	    if(op==2){
 
 		
 	        	if(send2Add[0]==send2Add[1]){
@@ -296,33 +296,49 @@ public:
 	}
 
 
+	void showAdjList(){
+		cout<<endl;
+		for (int v = 0; v < vert_node.size(); v++) 
+		    { 
+		        cout << "Adjacency list"
+		             << v << "\n head "; 
+		        for (auto x : adjList_[v]) //for each 
+		           cout << "-> " << x<<endl;; 
+		    } 
+	}
 
-
-	string isConnectedEdge(int vertice,int edgeTarget){
+	int isConnectedEdge(int vertice,int edgeTarget){
 		//Check if vertices are connected;
-		//On this Exercice the grapg is unweight/undirected -> 2 is connected with 1 as 2 is connected with 1
-
+		//
+		//
+		cout<<endl;
 		cout<<YELLOW_TEXT("Checking")<<" if vertice:"<<vertice<<" is connect with vertice:"<<edgeTarget<<endl;
 		for(int x=0;x<=this->vert_node.size()-1;x++){	
 					for(int y=0;y<=this->vert_node.size()-1;y++){
 						//cout<<"WOW:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
 						if(vertice==this->vert_node[x] && edgeTarget==this->vert_node[y]){
 							//cout<<"addEdge:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
-							if(this->matrix[x][y]!=0){
-								cout<<GREEN_TEXT("Found")<<" with a edge weight of "<<matrix[x][y]<<endl;
-								cout<<GREEN_TEXT("Connected")<<endl;
-								return to_string(matrix[x][y]);
+							if(this->matrix[x][y]==-1){
+
+								cout<<GREEN_TEXT("Same")<<" vertice "<<RED_TEXT("no edge")<<"-> "<<matrix[x][y]<<endl;
+								return matrix[x][y];
+
+							}
+
+							if(this->matrix[x][y]!=0 ){
+								cout<<GREEN_TEXT("Found")<<" with "<<GREEN_TEXT("a edge ")<<"weight of "<<YELLOW_TEXT(<<matrix[x][y]<<)<<endl;
+								return matrix[x][y];
 							}else{
 
-								cout<<GREEN_TEXT("Found")<<" but with no edge weight -> "<<matrix[x][y]<<endl;
-								cout<<RED_TEXT("Not connected")<<endl;
-								return to_string(matrix[x][y]);
+								cout<<GREEN_TEXT("Found")<<" but with "<<RED_TEXT("no edge")<<" weight -> "<<matrix[x][y]<<endl;
+								return matrix[x][y];
 
 							}
 						}
 
 					}
 			}
+			cout<<RED_TEXT("Not a vertice")<<endl;
 		
 
 	}
@@ -410,7 +426,8 @@ public:
 	    // while(currentVertice!=vert_node[send2Add[1]]){
 	     	for(int x=0;x<=this->vert_node.size()-1;x++){
 	     		for(int y=0;y<=this->vert_node.size()-1;y++){
-	     			if(isConnectedEdge(vert_node[x],vert_node[y])!="0"){
+	     			if(isConnectedEdge(vert_node[x],vert_node[y])!=0){
+	     				//Develop Adj List 
 	     				cout<<"Vertice: "<<vert_node[x]<<RED_TEXT(" connected with vertice ")<<vert_node[y]<<endl; 
 
 	     			}
@@ -508,12 +525,18 @@ int main(){
 	cout<<endl;
 	cout<<"Actual Graph"<<endl;
 	gra.showMatrix();
-
+	cout<<endl;
+	cout<<" Adjacency List"<<endl;
+	//gra.showAdjList();
 	//gra.path2Vertice();
 
 	//gra.isConnectedFull();
-	gra.isConnectedEdge(22,11);
-	gra.dijkstraAlgorithm();
+	/*
+	if(gra.isConnectedEdge(66,66)>0){
+		cout<<GREEN_TEXT("Connected")<<endl;
+	}else{cout<<RED_TEXT("Not connected")<<endl;}
+	*/
+	//gra.dijkstraAlgorithm();
 /* 
 
 	if(gra.isConnectedFull()==true){
