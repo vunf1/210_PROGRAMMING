@@ -15,6 +15,7 @@ DEV:
 #include <fstream> //filestram
 
 #include <iterator>//for split string into words separelaty to compare with a vector
+
 #include <sstream>//pre-'function' (make iterator easy to read) 
 #include <cstring>
 #include <algorithm>
@@ -54,7 +55,6 @@ void sendToTxT(string text){
 */
 int getmaxHeight(){
 
-
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w); 
 	return w.ws_row;
@@ -78,10 +78,12 @@ class graph{
 public:
 	vector<int> vert_node;//Vertice Unique List
     int **matrix;
-    vector <int> adjList_[];
+    int **adjList_;
+    //look lists and see ig possible list[x] can be identify to then usa as adjancylist[x]-[y(size variable)]
+    
     
     /*
-    // 
+    // Title: Pointer-to-pointer dynamic two-dimensional array
     // Author: Alexander Shukaev
     // Date: Apr 13/14 at 05:52pm 
     // Availability: https://stackoverflow.com/a/16001894/10700835
@@ -127,10 +129,12 @@ public:
 								return false;
 							}else{
 								//weight graph/ indirected
-							    //adjList_[vert_node[x]].push_back(vert_node[y]); 
-							   // adjList_[vert_node[y]].push_back(vert_node[x]); 
 								this->matrix[x][y]=weight;
 								this->matrix[y][x]=weight;
+
+							    cout<<"adj["<<x<<"].push_back("<<vert_node[y]<<")"<<endl; 
+							    cout<<"adj["<<y<<"].push_back("<<vert_node[x]<<")"<<endl;
+
 								return true;	
 							}
 						}
@@ -139,6 +143,46 @@ public:
 				}
 	}
 
+
+	bool creatAdjList(){
+		cout<<"Creating Adjacency List"<<endl;
+
+	  	adjList_ = new int* [vert_node.size()];
+
+      	for (int x = 0; x < vert_node.size(); x++){
+
+            adjList_[x] = new int [vert_node.size()];
+            
+            for(int y = 0; y < vert_node.size(); y++){
+
+				adjList_[x][y]=0; 
+
+            	if(matrix[x][y]!=0 && matrix[x][y]!=-1 ){
+            		adjList_[x][y]=vert_node[y]; 
+
+					cout<<"Vertice "<<vert_node[x]<<RED_TEXT(" connected to Vertice ")<<vert_node[y]<<" Y Po.->"<<y<<endl;
+				}
+            }
+            cout<<endl;
+        }
+
+	}
+ void showAdjList(){
+
+		cout<<"Adjacency List:"<<endl;
+
+        for (int x = 0; x < vert_node.size(); ++x){
+        	cout<<" Vertice "<<vert_node[x]<<" -> ";
+        	for (int y = 0; y < vert_node.size(); ++y){
+        		if(this->adjList_[x][y]){
+        			cout<<this->adjList_[x][y]<<" ";
+        		}
+
+        	
+        	}
+        	cout<<endl;
+        }
+ }
 
 
 
@@ -152,7 +196,7 @@ public:
 	//
 	//Use this function to handle user input
 	*/
-	bool extractIntegerWords(string str,int op) 
+	bool splitInputStr(string str,int op) 
 	{ 
 
 	    stringstream ss;     
@@ -177,21 +221,31 @@ public:
 	        if(op==0){
 	        	ss >> temp; 
 		        if (stringstream(temp) >> found){
-		        	this->vert_node.push_back(found);
-		          }
+		        	if(found<0){
+		        		return false;
+			        }else if(found>0 ){
+			        		this->vert_node.push_back(found);
+			        	}else{
+			        		return true;
+			        	}
+		        }
 		        temp = "";
 
 	        }
 	        if(op==1){
 	        	ss >> temp; 
 		        if (stringstream(temp) >> found){
-
-		        	send2Add.push_back(found);
+		        	if(found<0){
+		        		
+			        }else if(found>0 || send2Add.size()<=2){
+			        		send2Add.push_back(found);
+			        	}
 		          }
 
 		        temp = "";
 	        	
-	        } 
+	        }
+ 
 	        if(op==2){
 	        	ss >> temp; 
 	        	if(send2Add.size()>=3){
@@ -204,14 +258,24 @@ public:
 	        	
 	        } 
 	    }
+
+
 	    if(op==1){
 
-    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 																			&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
 
+
+
+
+    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 											&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
+
+    			//send2Add[Vert_Ori][Vert_End][edge]
+	    			
 	    			if(send2Add[0]==send2Add[1]){
 
 						cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("NOT CONNECTED - Same Vertice")<<endl;
+
 	    			}else{
+
 				    	if(addEdge(send2Add[0],send2Add[1],send2Add[2])==true){
 
 		    				cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connected Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
@@ -295,18 +359,6 @@ public:
 
 	}
 
-
-	void showAdjList(){
-		cout<<endl;
-		for (int v = 0; v < vert_node.size(); v++) 
-		    { 
-		        cout << "Adjacency list"
-		             << v << "\n head "; 
-		        for (auto x : adjList_[v]) //for each 
-		           cout << "-> " << x<<endl;; 
-		    } 
-	}
-
 	int isConnectedEdge(int vertice,int edgeTarget){
 		//Check if vertices are connected;
 		//
@@ -362,12 +414,12 @@ public:
 		cout<<string(getmaxWidth()/6,' ')<<GREEN_TEXT("Identify the Origin vertices and Target vertice -> ")<<endl;
 		cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1\t");
 		getline(cin,vertOriTar);
-		while(extractIntegerWords(vertOriTar,2)!=true){
+		while(splitInputStr(vertOriTar,2)!=true){
 
 			cout<<string(getmaxWidth()/8,' ')<<RED_TEXT("ERROR too many vertices or equal")<<endl;
 			cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1\t");
 			getline(cin,vertOriTar);
-			extractIntegerWords(vertOriTar,2);
+			splitInputStr(vertOriTar,2);
 
 
 		}
@@ -389,70 +441,6 @@ public:
 
 
 
-
-	bool dijkstraAlgorithm(){
-		//DO
-		// path between 2 vertices
-
-		int visited[vert_node.size()-1];
-		int distanceVer[vert_node.size()-1];
-		int currentVertice;
-
-		string vertOriTar;
-		cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Path Between Vertices ")<<endl;
-		cout<<string(getmaxWidth()/6,' ')<<GREEN_TEXT("Identify the Origin vertices and Target vertice -> ")<<endl;
-		cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1 \t");
-		getline(cin,vertOriTar);
-		while(extractIntegerWords(vertOriTar,2)!=true){
-
-			cout<<string(getmaxWidth()/8,' ')<<RED_TEXT("ERROR too many vertices or equal")<<endl;
-			cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1\t");
-			getline(cin,vertOriTar);
-			extractIntegerWords(vertOriTar,2);
-		}
-
-		//cout<<"VERTICE ->"<<vert_node[send2Add[0]]<<vert_node[send2Add[1]]<<endl;
-		
-		currentVertice=vert_node[send2Add[0]];
-	     // Initialize all distances as INFINITE
-	     for (int i = 0; i < vert_node.size()-1; i++){
-	        distanceVer[i] = INT_MAX;
-	        visited[i] = false;
-
-	     } // Distance of source vertex from itself is always 0 
-	     distanceVer[send2Add[0]] = 0;
-
-
-	    // while(currentVertice!=vert_node[send2Add[1]]){
-	     	for(int x=0;x<=this->vert_node.size()-1;x++){
-	     		for(int y=0;y<=this->vert_node.size()-1;y++){
-	     			if(isConnectedEdge(vert_node[x],vert_node[y])!=0){
-	     				//Develop Adj List 
-	     				cout<<"Vertice: "<<vert_node[x]<<RED_TEXT(" connected with vertice ")<<vert_node[y]<<endl; 
-
-	     			}
-
-
-
-
-	     		}
-	     	}
-
-
-
-
-	     //}
-	     
-
-
-	    
-
-
-	
-	}
-
-
-
 };
 
 int main(){
@@ -463,15 +451,32 @@ int main(){
 	//Identify Vertices
 	cout<<string((getmaxWidth()/2)-9,' ')<<GREEN_TEXT("Identify the vertices")<<endl;
 	cout<<string((getmaxWidth()/3)-2,' ')<<GREEN_TEXT("Seperate by space example -> ")<<RED_TEXT("1 2 3 4 5 6")<<endl;
-	//getline(cin,numVert);
+	
 
 	
 	//DINAMIC
-	//gra.extractIntegerWords(numVert,0);
+	//getline(cin,numVert);
+		
+
+
+	//gra.splitInputStr(numVert,0);
+
+
+
 	
 	//STATIC
-	gra.extractIntegerWords("11 22 33 44 55 66",0);
+	gra.splitInputStr("11 22 33 44 55 66",0);	
+/*
+	while(gra.splitInputStr("11 22 33 44 55 66",0)!=true){
 
+		cin.clear();
+		cout<<string((getmaxWidth()/2)-9,' ')<<RED_TEXT("Identify valid vertices(non-negative)")<<endl;
+		//gra.splitInputStr(numVert,0);
+		getline(cin,numVert);
+		gra.splitInputStr(numVert,0);
+
+	}
+*/
 	gra.matrixGraph();
 	cout<<GREEN_TEXT("Creating graph ")<<gra.vert_node.size()<<"x"<<gra.vert_node.size()<<endl<<"..."<<endl;
 	cout<<"Show Actual Graph"<<endl;
@@ -492,42 +497,54 @@ int main(){
 	cout<<endl;
 	cout<<string((getmaxWidth()/2)-9,' ')<<GREEN_TEXT("Identify the edges")<<endl;
 	cout<<string((getmaxWidth()/3)-15,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice) (Vertice_Edge) (Edge Weight) -> ")<<RED_TEXT("1 2 20")<<endl;
+	cout<<string((getmaxWidth()/3)-10,' ')<<RED_TEXT("complex example of input: ")<<" 1 2 10 3 2 25 5 3 10 "<<endl;
 	cout<<string((getmaxWidth()/2)-9,' ')<<GREEN_TEXT("then press ENTER")<<endl;
 
-	cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Send nothing to finish")<<endl;
+	cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Send nothing to finish ")<<endl;
 
 	cout<<"Insert: ";
-	/*
+	
 	// Dinamic
-	numVert.empty();
 
+	numVert.empty();
+/*
 	getline(cin,numVert);
 
 	//gra.splitVertice2Edge(numVert);
+
 	while(numVert!=""){
 		cin.clear();
 
-		gra.extractIntegerWords(numVert,1);
+		gra.splitInputStr(numVert,1);
 		cout<<"Other: ";
 		getline(cin,numVert);
 
 	}
+*/
 
+	
 
-	*/
 	cout<<endl;
-	gra.extractIntegerWords("11 22 5",1);
-	gra.extractIntegerWords("11 33 20",1);
-	gra.extractIntegerWords("11 44 10",1);
-	gra.extractIntegerWords("22 33 10",1);
-	gra.extractIntegerWords("22 55 5",1);
-	gra.extractIntegerWords("44 66 20",1);
+	//grab 
+	gra.splitInputStr("11 44 5",1);
+	gra.splitInputStr("22 33 10",1); 
+	gra.splitInputStr("33 66 10",1);
+	gra.splitInputStr("44 55 5",1);
+	gra.splitInputStr("44 66 20",1);
+	cout<<endl;
+
 	cout<<endl;
 	cout<<"Actual Graph"<<endl;
 	gra.showMatrix();
 	cout<<endl;
-	cout<<" Adjacency List"<<endl;
-	//gra.showAdjList();
+	cout<<"Creating Adjacency List :"<<endl;
+	gra.creatAdjList();
+	cout<<"Adjacency List :"<<endl;
+	gra.showAdjList();
+	//cout<<"DPS Imple:"<<endl;
+	//gra.DFS(22);
+
+
 	//gra.path2Vertice();
 
 	//gra.isConnectedFull();
@@ -548,7 +565,6 @@ int main(){
 
 
 	//gra.deletePossiLeaks();
-
 
 	return 0;
 }

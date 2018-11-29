@@ -331,7 +331,7 @@ void pressENTER2continue(){
 	cout<<endl;
 	cout<<" Press "<<GREEN_TEXT("ENTER")" to continue\r";
 	cin.clear();
-	if (cin.get() == '\n') {}else{cin.ignore(INT_MAX,'\n'); pressENTER2continue();};
+	if (cin.get() == '\n') {system("clear");}else{cin.ignore(INT_MAX,'\n'); pressENTER2continue();};
 
 }
 
