@@ -3,12 +3,12 @@ DEV:
 	Version Control:
 		user input [x]
 		handle user input [x]
-		create adjant table for user path input [ ]
-		function saying if that vertice is connect to other [ ]
+		create adjant table for user path input [x]
+		function saying if that vertice is connect to other [x]
 
 
 
-		some bugus, output of same thing dont know yet -> tomorrow fix 
+		output of same 'false' input trigger bugs ->  
  */
 
 #include <iostream>
@@ -24,12 +24,12 @@ DEV:
 #include <climits> // for INT_MAX limits that can fix possible bugs from User Input
 #include <limits>
 #include <vector>
-#include<bits/stdc++.h> 
+#include<bits/stdc++.h> // for each 
 
 // ioctrl provides device-specific low-level control
 //need for get max width and height
-#include <sys/ioctl.h>
-#include <stdio.h> //Library outdated from C, helps preprocessor the compiler
+#include <sys/ioctl.h> //Library outdated from C, helps preprocessor the compiler
+#include <stdio.h> //can load properties 
 //function getMax...
 
 using namespace std;
@@ -77,15 +77,15 @@ int getmaxWidth(){
 
 }
 
-vector <int> send2Add;
+vector <int> send2Add;//grab unout [0]-Vertice Ori [1]-Vertice end [2]- Vertice weight
 
 class graph{
 public:
 	vector<int> vert_node;//Vertice Unique List
-    int **matrix;
-    int **adjList_;
-    list <int> *adjAsList;
-    vector <int> pathToVertice;
+    int **matrix;// Adj MAtrix
+    int **adjList_;// adj vector
+    list <int> *adjAsList;//adj list
+    vector <int> pathToVertice;//path created from search algorithm2txt
     
     
     /*
@@ -150,6 +150,7 @@ public:
 
 
 	bool creatAdjList(){
+		//Adjacency List -> List 2D multidimention [dinamic]
 		cout<<GREEN_TEXT("Creating")<<" Adjacency List..."<<endl;
 
 	  	adjList_ = new int* [vert_node.size()];
@@ -175,6 +176,7 @@ public:
 	}
 
 	void showAdjVector(){
+		//creat Adj List using vector - first try
 	
 		cout<<"Adjacency List[vector]:"<<endl;
 
@@ -194,8 +196,8 @@ public:
 
 	/*
 	//
-	//Title: Extract all integers from string in C++ - GeeksforGeeks
-	//Author:  Prakhar Agrawal
+	//Title: 	Extract all integers from string in C++ - GeeksforGeeks
+	//Author:   Prakhar Agrawal
 	//Availability: https://www.geeksforgeeks.org/extract-integers-string-c/
 	//
 	//
@@ -226,7 +228,7 @@ public:
 	        if(op==0){
 	        	ss >> temp; 
 		        if (stringstream(temp) >> found){
-		        	if(found>0){
+		        	if(found>=0){
 			        	this->vert_node.push_back(found);
 			        }else if(found<0){
 		        		return false;
@@ -240,11 +242,12 @@ public:
 	        if(op==1){
 	        	ss >> temp; 
 		        if (stringstream(temp) >> found){
-		        	if(found<0){
+		        	if(!found){
+		        		return false;
 		        		
 			        }else if(found>0 || send2Add.size()<=2){
-			        		send2Add.push_back(found);
-			        	}
+			        	send2Add.push_back(found);
+			        }else{return false;}
 		          }
 
 		        temp = "";
@@ -268,34 +271,31 @@ public:
 	    	return true;
 	    }
 	    if(op==1){
-
-
-
-
-
-    		if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 											&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
+	    	//handle user 'false' input
+	    	if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 
+    			&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
 
     			//send2Add[Vert_Ori][Vert_End][edge]
 	    			
 	    			if(send2Add[0]==send2Add[1]){
 
 						cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("NOT CONNECTED - Same Vertice")<<endl;
+						return true;
 
 	    			}else{
 
-				    	if(addEdge(send2Add[0],send2Add[1],send2Add[2])==true){
+				    	if(addEdge(send2Add[0],send2Add[1],send2Add[2])==true){// add edge/connection successfully
 
 		    				cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connect Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
-				    		
+				    		cin.clear();
+				    		return true;
 				    	}else{
 				    		cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("ALREADY CONNECTED")<<endl;
 				    		cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("Do you want to ")<<YELLOW_TEXT("overwrite")<<RED_TEXT(" the edge value? (y)")<<endl;
 
 							for(int x=0;x<=this->vert_node.size()-1;x++){	
 								for(int y=0;y<=this->vert_node.size()-1;y++){
-
-
-									if(send2Add[0]==vert_node[x] && send2Add[1]==vert_node[y]){
+									if(send2Add[0]==vert_node[x] && send2Add[1]==vert_node[y]){//check on matrix if input vertices have already weight
 
 										if(this->matrix[x][y]!=0){						
 											cout<<"Actual Value: "<<BLUE_TEXT(<<matrix[x][y]<<)<<endl;
@@ -310,8 +310,8 @@ public:
 										if(ans=="y"){
 											this->matrix[x][y]=send2Add[2];
 											this->matrix[y][x]=send2Add[2];
-
 		    								cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connect Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
+											
 											}else if(ans=="n"){}
 
 
@@ -320,23 +320,22 @@ public:
 										cin.clear();
 										cin.ignore(INT_MAX,'\n');
 									}
-
-
 								}
 							}
 
 				    	}	
 
 	    			}
-		    } else{
-					cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("NOT ADDED - Not a Vertice")<<endl;
-				    return false;
-				}
+		    }else{
+		    	cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("NOT ADDED - Not a Vertice")<<endl;
+		    	return false;
+		    }
 	    }
 	    if(op==2){
 
-		
-	        	if(send2Add[0]==send2Add[1]){
+	    	if(find(vert_node.begin(), vert_node.end(), send2Add[0]) != vert_node.end() 
+    			&& find(vert_node.begin(), vert_node.end(), send2Add[1]) != vert_node.end() ) {
+	    		if(send2Add[0]==send2Add[1]){
 	        		return false;
 	        	}else{
 	        		for (int x = 0; x <= vert_node.size()-1; ++x)
@@ -351,21 +350,34 @@ public:
 						}
 					}
 	        		return true;
-	        	}}
+	        	}
+
+	    	}else{return false;}
+	    }
 
 	} 
 	void isPath(int sVert,int eVert){
 		//Path missing , do 
 		bool check;
-
+		isBFSlogic(sVert,eVert,1);
+		stringToTxT<<"Path to Vertice "<<sVert<<" to "<<eVert<<"\n";
 		for (int x = 0; x < pathToVertice.size(); ++x)
-		{
-			cout<<" -> "<<pathToVertice[x];
-		}
-		cout<<" :: "<<check<<endl;
+		{ 
+			stringToTxT<<" |-> "<<pathToVertice[x];
+		}stringToTxT<<"\n------------\n";
 	}
 
-	bool isBFSlogic(int startVert){
+
+	/*
+	//
+	//Title: 	Breadth First  
+	//Author:   GeeksforGeeks
+	//Date:  	1 Sep 2016
+	//Availability: https://www.youtube.com/watch?v=0u78hx-66Xk
+	//
+	//
+	*/
+	bool isBFSlogic(int startVert,int endVert,bool op){
 		if(sendIndex(startVert)==-1){
 			//no valid vertice
 			return false;
@@ -384,19 +396,22 @@ public:
 
 	    while(!queue.empty()) 
 	    { 
-	        // Dequeue a vertice from queue
+	        // dequeue a vertice from queue
 	        startVert = queue.front(); 
 
 	        queue.pop_front();
 	        visited[sendIndex(startVert)]=true;
 
 	    	pathToVertice.push_back(startVert);  
+	    	if(startVert==endVert && op==1){
+	    		return startVert;
 
+
+
+	    	}
 	        //cout<<"QUEUE: "<<startVert<<endl;
 	  
-	        // Get all adjacent vertices of the dequeued 
-	        // vertice startVert. If a adjacent has not been visited,  
-	        // then mark it visited and enqueue it 
+	        // each y on each  adjList[x] element extract
 	        for (i = adjAsList[sendIndex(startVert)].begin(); i != adjAsList[sendIndex(startVert)].end(); ++i){
 	        	//cout<<"Vertice "<<*i<<" visited ->"<<visited[sendIndex(*i)]<<endl;
 	        	if (!visited[sendIndex(*i)]){ 
@@ -407,7 +422,7 @@ public:
 	        }
 
 	    }
-	    for (int x = 0; x < vert_node.size(); ++x){
+	    for (int x = 0; x < vert_node.size(); ++x){//return to isConnected if same vertice still as 0
 	    	if(visited[x]==0){
 	    		return false;
 	    	}
@@ -421,12 +436,12 @@ public:
 			return false;
 		}
 
-		bool checkCon=isBFSlogic(vert);
+		bool checkCon=isBFSlogic(vert,0,0);
 
 
 
 
-		if(checkCon==0){
+		if(checkCon==0){// handle 0 1 from BFS search, for a full true visited array
 			cout<<RED_TEXT("NO ")<<","<<RED_TEXT("The graph isn't strongly connected")<<endl;
 
 
@@ -440,10 +455,10 @@ public:
 
 		    for (int x = 0; x < pathToVertice.size(); ++x){
 		    	if(x==0){
-		    	stringToTxT<<" start| "<<x<<" - "<<pathToVertice[x];
+		    	stringToTxT<<" start| -> "<<pathToVertice[x];
 
 		    	}else{
-		    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+		    	stringToTxT<<" | -> "<<pathToVertice[x];
 
 		    	}
 				
@@ -464,10 +479,10 @@ public:
 		    for (int x = 0; x < pathToVertice.size(); ++x){
 
 		    	if(x==0){
-		    		stringToTxT<<" start| "<<x<<" - "<<pathToVertice[x];
+		    		stringToTxT<<" start| -> "<<pathToVertice[x];
 
 			    }else{
-			    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+			    	stringToTxT<<" | -> "<<pathToVertice[x];
 
 				}
 					
@@ -482,6 +497,16 @@ public:
 
 
 
+	/*
+	//
+	//Title: Depth First 
+	//Author:  GeeksforGeeks
+	//Date: 8 Nov 2016
+	//Availability: https://www.youtube.com/watch?v=Y40bRyPQQr0
+	//
+	//
+	//Use this function to complete the loop for visited vertices
+	*/
 	bool isDFSnext(int actVert, bool visited[]){
 		pathToVertice.push_back(actVert);
 	    visited[sendIndex(actVert)] = true; 	  
@@ -496,6 +521,16 @@ public:
 	    return visited; 
 	} 
 
+	/*
+	//
+	//Title: Depth First 
+	//Author:  GeeksforGeeks
+	//Date: 8 Nov 2016
+	//Availability: https://www.youtube.com/watch?v=Y40bRyPQQr0
+	//
+	//
+	//Use this function to put all 'visited' as false then call isDFSnext 
+	*/
 	void isDFSlogic(int actVert){
 		pathToVertice.clear();//clear previous path 
 
@@ -515,9 +550,9 @@ public:
 
 	    for (int x = 0; x < vert_node.size(); ++x){
 	    	if(visited[x]==0){
-	    		stringToTxT<<"\n not reached| "<<x<<" - "<<vert_node[x]<<"\n";
+	    		stringToTxT<<"\n missing connection |  "<<"\n";
 	    	}else{
-	    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+	    	stringToTxT<<" | -> "<<pathToVertice[x];
 
 	    	}
 		}
@@ -546,12 +581,12 @@ public:
 
 	/*
 	//
-	//Title: Extract all integers from string in C++ - GeeksforGeeks
-	//Author:  Prakhar Agrawal
-	//Availability: https://www.geeksforgeeks.org/extract-integers-string-c/
+	//Title: list::begin
+	//Author:  © cplusplus.com
+	//Availability: http://www.cplusplus.com/reference/list/list/begin/
 	//
 	//
-	//Use this function to handle user input
+	//Use this function to draw adj list [list]
 	*/
 	void showlist(){ 
 	    list <int> :: iterator connectedVert; 
@@ -567,7 +602,7 @@ public:
 
 
 
-	int sendIndex(int value){
+	int sendIndex(int value){// send index of given vertice, if existed
 		for (int x = 0; x < vert_node.size(); x++){
 			if(value==vert_node[x]){
 				return x;
@@ -627,7 +662,7 @@ int main(){
 	}
 	cout<<endl;
 	cout<<string((getmaxWidth()/2)-9,' ')<<GREEN_TEXT("Identify the edges")<<endl;
-	cout<<string((getmaxWidth()/3)-15,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice) (Vertice_Edge) (Edge Weight) -> ")<<RED_TEXT("1 2 20")<<endl;
+	cout<<string((getmaxWidth()/3)-20,' ')<<GREEN_TEXT("Seperate by space (Origin_Vertice) (Vertice_Edge) (Edge Weight) -> ")<<RED_TEXT("1 2 20")<<endl;
 	cout<<string((getmaxWidth()/3)-10,' ')<<RED_TEXT("complex example of input: ")<<" 1 2 10 3 2 25 5 3 10 "<<endl;
 	cout<<string((getmaxWidth()/2)-9,' ')<<GREEN_TEXT("then press ENTER")<<endl;
 
@@ -641,18 +676,21 @@ int main(){
 
 	getline(cin,numVert);
 
-	//gra.splitVertice2Edge(numVert);
 
 	while(numVert!=""){
 		cin.clear();
-
-		gra.splitInputStr(numVert,1);
-		cout<<"Other: ";
+		if(gra.splitInputStr(numVert,1)!=true){
+			cin.clear();
+			cin.ignore(INT_MAX,'\n');
+			cout<<RED_TEXT("Wrong input")<<endl;
+		}
+		cout<<"Other: \t";
 		getline(cin,numVert);
+		
 
-	}
-
-	cout<<endl;
+	}cout<<endl;
+	
+	//static
 	//grab 
 	//create edges to the vertices
 	/*
@@ -670,30 +708,44 @@ int main(){
 	cout<<"Actual Graph"<<endl;
 	gra.showMatrix();
 	cout<<endl;
-	//cout<<"Creating Adjacency List :"<<endl;
+	cout<<"Creating Adjacency List :"<<endl;
 	gra.creatAdjList();
-	//cout<<"Adjacency List :"<<endl;
-	//gra.showAdjVector();
+	cout<<"Adjacency List :"<<endl;
+	gra.showAdjVector();
+
 	gra.showlist();
+	cout<<endl;
 
 	//Give vertice and from there say if graph is all connected
 	//context fifo
 	int chooseVerti;
-	cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Check if the graph is strong")<<endl;
-	cout<<string((getmaxWidth()/2)-10,' ')<<GREEN_TEXT("Input a vertice")<<endl;
-	cin>>chooseVerti;
-	while(cin.fail()|| gra.isConnected(chooseVerti)==false){
-		cin.clear();
-		cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Wrong Vertice")<<endl;
-		cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Other: \t")<<endl;
-		cin>>chooseVerti;
-		gra.isConnected(chooseVerti);
-	}
-cout<<"----"<<endl;
-	gra.isConnected(chooseVerti);//BFS Method
-	//gra.isPath(22,44);
+	cout<<string((getmaxWidth()/8)-10,' ')<<RED_TEXT("Check if the graph is strong")<<endl;
+	cout<<string((getmaxWidth()/8)-5,' ')<<GREEN_TEXT("choose a vertice")<<endl;
+
+	cout<<string((getmaxWidth()/8)-10,' ')<<RED_TEXT("Available vertice :");		
+	for (int x = 0; x < gra.vert_node.size(); x++){
+		cout<<" "<<gra.vert_node[x];
+	}cout<<endl;
 	
-	//gra.isDFSlogic(22);
+	cin>>chooseVerti;
+	gra.isConnected(chooseVerti);//BFS Method
+	
+/*
+	while(cin.fail() || gra.sendIndex(chooseVerti)==-1){
+		cin.clear();
+		cin.ignore(INT_MAX,'\n');
+		cout<<string((getmaxWidth()/getmaxWidth())+5,' ')<<RED_TEXT("Wrong Vertice")<<endl;
+		cout<<string((getmaxWidth()/getmaxWidth()),' ')<<RED_TEXT("Other: \t");
+		cin>>chooseVerti;
+		gra.isConnected(chooseVerti);//BFS Method
+	}*/
+	cout<<"----"<<endl;
+
+
+	gra.isPath(2,4);
+	
+	gra.isDFSlogic(chooseVerti);
+	//gra.isConnected(2);
 
 
 	return 0;
