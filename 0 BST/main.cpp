@@ -301,20 +301,27 @@ BinTreeNode* deleteNode(BinTreeNode* tree, string targetNode){
 
 		if(tree->right == NULL && tree->left == NULL){ //Node R L NULL
 			cout<<RED_TEXT("Replaced by ")<<tree->value<<endl;
+	    	cout<<"Find new minMax Node -> "<<RED_TEXT(<<tree->value<<)<<endl;
 	        delete tree;
 	        tree = NULL;
 	    }else if(tree->right == NULL){//Node R NULL
+	    	cout<<GREEN_TEXT("Word found and deleted.")<<endl;
 	        BinTreeNode* temp = tree;
 	        tree= tree->left;
+	    	cout<<"Find new minMax Node -> "<<RED_TEXT(<<tree->value<<)<<endl;
+			cout<<RED_TEXT("Replaced by ")<<tree->value<<endl;
 	        
 	        delete temp;
 	    }else if(tree->left == NULL){//Node L NULL
+	    	cout<<GREEN_TEXT("Word found and deleted.")<<endl;
 	        BinTreeNode* temp = tree;
 	        tree= tree->right;
 	        delete temp;
+	    	cout<<"Find new minMax Node -> "<<RED_TEXT(<<tree->value<<)<<endl;
+			cout<<RED_TEXT("Replaced by ")<<tree->value<<endl;
 	    }else{
 	    		cout<<GREEN_TEXT("Word found and deleted.")<<endl;
-	    		cout<<"Find new minMax Node from "<<RED_TEXT(<<tree->value<<)<<endl;
+	    		cout<<"Find new minMax Node -> "<<RED_TEXT(<<tree->value<<)<<endl;
 	            BinTreeNode* temp = findMinMax(tree->left);
 	            tree->value = temp->value;
 	    		cout<<GREEN_TEXT("New node founded: ")<<tree->value<<endl;
@@ -383,6 +390,12 @@ int main()
   	word.clear();
   	getline(cin,word);
   	deleteNode(t,word);
+	pressENTER2continue();
+
+  	cout<<RED_TEXT("Find Node : ");
+  	word.clear();
+  	getline(cin,word);
+  	tree.bin_tree_find(t,word);
 	pressENTER2continue();
 
 

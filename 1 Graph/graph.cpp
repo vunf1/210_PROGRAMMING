@@ -39,13 +39,18 @@ using namespace std;
 
 	
 
+stringstream stringToTxT;
 
-void sendToTxT(string text){
-	fstream file;
-	file.open("travelOutput.txt", fstream::app);
-		file<<text<<"\n";
+void sendToTxT(){
+	string text;
+	text=stringToTxT.str();
 
+	ofstream file;
+	file.open("travelOutput.txt", ofstream::app);
+		file<<text;
+		file<<"\n";
 	file.close();
+	stringToTxT.clear();
 }
 
 /*
@@ -79,7 +84,8 @@ public:
 	vector<int> vert_node;//Vertice Unique List
     int **matrix;
     int **adjList_;
-    //look lists and see ig possible list[x] can be identify to then usa as adjancylist[x]-[y(size variable)]
+    list <int> *adjAsList;
+    vector <int> pathToVertice;
     
     
     /*
@@ -89,25 +95,25 @@ public:
     // Availability: https://stackoverflow.com/a/16001894/10700835
     */	
 	void matrixGraph(){
+		adjAsList = new list<int> [vert_node.size()];
+        matrix = new int* [vert_node.size()];
+        for (int x = 0; x < vert_node.size(); x++){
 
-            matrix = new int* [vert_node.size()];
-            for (int x = 0; x < vert_node.size(); x++){
-
-                matrix[x] = new int [vert_node.size()];
-                
-                for(int y = 0; y < vert_node.size(); y++){
-                	if(x==y){
-                
-                    	matrix[x][y] = -1;
+            matrix[x] = new int [vert_node.size()];
+            
+            for(int y = 0; y < vert_node.size(); y++){
+            	if(x==y){
+            
+                	matrix[x][y] = -1;
 
 
-                	}else{
-                
-                    	matrix[x][y] = 0;
+            	}else{
+            
+                	matrix[x][y] = 0;
 
-                	}
-                }
+            	}
             }
+        }
 	}
 
 
@@ -119,6 +125,7 @@ public:
 
 		//indirected way and weight
 		//this type of graph is weighted/undirected 2--[w]--1 && 1--[w]--2
+
 
 		for(int x=0;x<=this->vert_node.size()-1;x++){	
 					for(int y=0;y<=this->vert_node.size()-1;y++){
@@ -132,8 +139,6 @@ public:
 								this->matrix[x][y]=weight;
 								this->matrix[y][x]=weight;
 
-							    cout<<"adj["<<x<<"].push_back("<<vert_node[y]<<")"<<endl; 
-							    cout<<"adj["<<y<<"].push_back("<<vert_node[x]<<")"<<endl;
 
 								return true;	
 							}
@@ -145,7 +150,7 @@ public:
 
 
 	bool creatAdjList(){
-		cout<<"Creating Adjacency List"<<endl;
+		cout<<GREEN_TEXT("Creating")<<" Adjacency List..."<<endl;
 
 	  	adjList_ = new int* [vert_node.size()];
 
@@ -160,16 +165,18 @@ public:
             	if(matrix[x][y]!=0 && matrix[x][y]!=-1 ){
             		adjList_[x][y]=vert_node[y]; 
 
-					cout<<"Vertice "<<vert_node[x]<<RED_TEXT(" connected to Vertice ")<<vert_node[y]<<" Y Po.->"<<y<<endl;
+					this->adjAsList[x].push_back(vert_node[y]);
+
+					cout<<"Vertice "<<vert_node[x]<<RED_TEXT(" connected ")<<"to Vertice "<<vert_node[y]<<YELLOW_TEXT(" Weight")<<"->"<<matrix[x][y]<<endl;
 				}
-            }
-            cout<<endl;
+            }cout<<endl;
         }
 
 	}
- void showAdjList(){
 
-		cout<<"Adjacency List:"<<endl;
+	void showAdjVector(){
+	
+		cout<<"Adjacency List[vector]:"<<endl;
 
         for (int x = 0; x < vert_node.size(); ++x){
         	cout<<" Vertice "<<vert_node[x]<<" -> ";
@@ -179,11 +186,9 @@ public:
         		}
 
         	
-        	}
-        	cout<<endl;
+        	}cout<<endl;
         }
- }
-
+	 }
 
 
 
@@ -221,14 +226,14 @@ public:
 	        if(op==0){
 	        	ss >> temp; 
 		        if (stringstream(temp) >> found){
-		        	if(found<0){
+		        	if(found>0){
+			        	this->vert_node.push_back(found);
+			        }else if(found<0){
 		        		return false;
-			        }else if(found>0 ){
-			        		this->vert_node.push_back(found);
-			        	}else{
-			        		return true;
-			        	}
-		        }
+			        }
+
+		        }else{return false;}
+
 		        temp = "";
 
 	        }
@@ -259,7 +264,9 @@ public:
 	        } 
 	    }
 
-
+	    if(op==0){
+	    	return true;
+	    }
 	    if(op==1){
 
 
@@ -278,7 +285,7 @@ public:
 
 				    	if(addEdge(send2Add[0],send2Add[1],send2Add[2])==true){
 
-		    				cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connected Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
+		    				cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connect Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
 				    		
 				    	}else{
 				    		cout<<string(getmaxWidth()/10,' ')<<RED_TEXT("ALREADY CONNECTED")<<endl;
@@ -303,6 +310,8 @@ public:
 										if(ans=="y"){
 											this->matrix[x][y]=send2Add[2];
 											this->matrix[y][x]=send2Add[2];
+
+		    								cout<<string(getmaxWidth()/10,' ')<<GREEN_TEXT("Connect Vertice ")<<send2Add[0]<<" to Vertice "<<send2Add[1]<<" with weight of "<<send2Add[2]<<endl;
 											}else if(ans=="n"){}
 
 
@@ -345,99 +354,227 @@ public:
 	        	}}
 
 	} 
+	void isPath(int sVert,int eVert){
+		//Path missing , do 
+		bool check;
+
+		for (int x = 0; x < pathToVertice.size(); ++x)
+		{
+			cout<<" -> "<<pathToVertice[x];
+		}
+		cout<<" :: "<<check<<endl;
+	}
+
+	bool isBFSlogic(int startVert){
+		if(sendIndex(startVert)==-1){
+			//no valid vertice
+			return false;
+		}
+		pathToVertice.clear();
+	    bool *visited = new bool[vert_node.size()]; 
+	    for(int i = 0; i < vert_node.size(); i++){visited[i] = false;}
+	    //all vertices as unvisited - all false;
+	    list<int> queue;// 
+	  
+	    visited[sendIndex(startVert)] = true; 
+	    //insert on queue;
+	    queue.push_back(startVert);
+	    //cout<<"QUEUE: "<<startVert<<endl;  
+	    list<int>::iterator i;  
+
+	    while(!queue.empty()) 
+	    { 
+	        // Dequeue a vertice from queue
+	        startVert = queue.front(); 
+
+	        queue.pop_front();
+	        visited[sendIndex(startVert)]=true;
+
+	    	pathToVertice.push_back(startVert);  
+
+	        //cout<<"QUEUE: "<<startVert<<endl;
+	  
+	        // Get all adjacent vertices of the dequeued 
+	        // vertice startVert. If a adjacent has not been visited,  
+	        // then mark it visited and enqueue it 
+	        for (i = adjAsList[sendIndex(startVert)].begin(); i != adjAsList[sendIndex(startVert)].end(); ++i){
+	        	//cout<<"Vertice "<<*i<<" visited ->"<<visited[sendIndex(*i)]<<endl;
+	        	if (!visited[sendIndex(*i)]){ 
+
+	                visited[sendIndex(*i)] = true; 
+	                queue.push_back(*i);
+	            } 
+	        }
+
+	    }
+	    for (int x = 0; x < vert_node.size(); ++x){
+	    	if(visited[x]==0){
+	    		return false;
+	    	}
+	    }
+	    return true;
+	} 
+
+
+	bool isConnected(int vert){
+		if(vert<0){
+			return false;
+		}
+
+		bool checkCon=isBFSlogic(vert);
+
+
+
+
+		if(checkCon==0){
+			cout<<RED_TEXT("NO ")<<","<<RED_TEXT("The graph isn't strongly connected")<<endl;
+
+
+     		stringToTxT<<"BFS Method - Graph isn't strongly connected missing connection\n";
+     		stringToTxT<<"All Vertices -> ";
+
+			for (int x = 0; x < vert_node.size(); ++x)
+			{
+				stringToTxT<<vert_node[x]<<" ";
+			}stringToTxT<<"\n";
+
+		    for (int x = 0; x < pathToVertice.size(); ++x){
+		    	if(x==0){
+		    	stringToTxT<<" start| "<<x<<" - "<<pathToVertice[x];
+
+		    	}else{
+		    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+
+		    	}
+				
+			}
+			stringToTxT<<"\n------------\n";sendToTxT();
+			return true;
+     	}else{
+     		cout<<GREEN_TEXT("YES")<<","<<GREEN_TEXT("The graph is strongly connected")<<endl;
+		    stringToTxT<<"BFS Method - Graph is strongly connected\n";
+
+		    stringToTxT<<"All Vertices -> ";
+			for (int x = 0; x < vert_node.size(); ++x)
+			{
+				stringToTxT<<vert_node[x]<<" ";
+			}stringToTxT<<"\n";
+
+
+		    for (int x = 0; x < pathToVertice.size(); ++x){
+
+		    	if(x==0){
+		    		stringToTxT<<" start| "<<x<<" - "<<pathToVertice[x];
+
+			    }else{
+			    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+
+				}
+					
+			}
+			stringToTxT<<"\n------------\n";sendToTxT();
+			cout<<endl;
+			return true;
+     	}
+
+
+	}
+
+
+
+	bool isDFSnext(int actVert, bool visited[]){
+		pathToVertice.push_back(actVert);
+	    visited[sendIndex(actVert)] = true; 	  
+
+	    list<int>::iterator i; 
+	    
+	    for (i = adjAsList[sendIndex(actVert)].begin(); i != adjAsList[sendIndex(actVert)].end(); ++i){
+	    	if (!visited[sendIndex(*i)]){
+	    		isDFSnext(*i, visited);
+	    	}
+	    }
+	    return visited; 
+	} 
+
+	void isDFSlogic(int actVert){
+		pathToVertice.clear();//clear previous path 
+
+	    bool *visited = new bool[vert_node.size()];
+
+	    for (int x = 0; x < vert_node.size(); x++){
+	    	visited[x] = false;
+	    }
+
+	    isDFSnext(actVert, visited); 
+	    stringToTxT<<"DFS Method - \n";
+	    stringToTxT<<"All Vertices -> ";
+	    for (int x = 0; x < vert_node.size(); ++x)
+			{
+				stringToTxT<<vert_node[x]<<" ";
+			}stringToTxT<<"\n";
+
+	    for (int x = 0; x < vert_node.size(); ++x){
+	    	if(visited[x]==0){
+	    		stringToTxT<<"\n not reached| "<<x<<" - "<<vert_node[x]<<"\n";
+	    	}else{
+	    	stringToTxT<<" | "<<x<<" - "<<pathToVertice[x];
+
+	    	}
+		}
+		stringToTxT<<"\n------------\n";sendToTxT(); 
+	} 
+
+
+
 
 
 
 	void showMatrix(){
+		cout<<"Show Actual Graph"<<endl;
 		for(int x=0;x<=this->vert_node.size()-1;x++){
 			//cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<vert_node[x];
 			for(int y=0;y<=this->vert_node.size()-1;y++){
-				cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<matrix[x][y];
+				cout<<string((getmaxWidth()/getmaxWidth())+1,' ')<<GREEN_TEXT(<<matrix[x][y]<<);
 			}
 			cout<<endl;
 		}
 
 	}
 
-	int isConnectedEdge(int vertice,int edgeTarget){
-		//Check if vertices are connected;
-		//
-		//
-		cout<<endl;
-		cout<<YELLOW_TEXT("Checking")<<" if vertice:"<<vertice<<" is connect with vertice:"<<edgeTarget<<endl;
-		for(int x=0;x<=this->vert_node.size()-1;x++){	
-					for(int y=0;y<=this->vert_node.size()-1;y++){
-						//cout<<"WOW:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
-						if(vertice==this->vert_node[x] && edgeTarget==this->vert_node[y]){
-							//cout<<"addEdge:"<<vert_node[x]<<"-"<<vert_node[y]<<endl;
-							if(this->matrix[x][y]==-1){
-
-								cout<<GREEN_TEXT("Same")<<" vertice "<<RED_TEXT("no edge")<<"-> "<<matrix[x][y]<<endl;
-								return matrix[x][y];
-
-							}
-
-							if(this->matrix[x][y]!=0 ){
-								cout<<GREEN_TEXT("Found")<<" with "<<GREEN_TEXT("a edge ")<<"weight of "<<YELLOW_TEXT(<<matrix[x][y]<<)<<endl;
-								return matrix[x][y];
-							}else{
-
-								cout<<GREEN_TEXT("Found")<<" but with "<<RED_TEXT("no edge")<<" weight -> "<<matrix[x][y]<<endl;
-								return matrix[x][y];
-
-							}
-						}
-
-					}
-			}
-			cout<<RED_TEXT("Not a vertice")<<endl;
-		
-
-	}
-
-
-	bool isConnectedFull(){
-		//DO
-		//Check if graph is strongly connected (all vertices have a edge)
-		//create variable to check a bool for each vertice if found a 1 mean have connection with other and push to the variable as visited and go next to other vertice if a vertice is missing(value 0/but the edge can have 0 as value ...) mean the graph is not strongly connected so compare at the end the variable with vert_node to see if is some vertice is missing
-
-		//send2Add[0] - Vertice Origin
-		//send2Add[1] - Vertice Target
-
-
-		//Create List
 
 
 
-		string vertOriTar;
-		cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Check Graph 'Strong' ")<<endl;
-		cout<<string(getmaxWidth()/6,' ')<<GREEN_TEXT("Identify the Origin vertices and Target vertice -> ")<<endl;
-		cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1\t");
-		getline(cin,vertOriTar);
-		while(splitInputStr(vertOriTar,2)!=true){
-
-			cout<<string(getmaxWidth()/8,' ')<<RED_TEXT("ERROR too many vertices or equal")<<endl;
-			cout<<string(getmaxWidth()/4,' ')<<GREEN_TEXT("Separate them by Space -> ex. 5 1\t");
-			getline(cin,vertOriTar);
-			splitInputStr(vertOriTar,2);
-
-
+	/*
+	//
+	//Title: Extract all integers from string in C++ - GeeksforGeeks
+	//Author:  Prakhar Agrawal
+	//Availability: https://www.geeksforgeeks.org/extract-integers-string-c/
+	//
+	//
+	//Use this function to handle user input
+	*/
+	void showlist(){ 
+	    list <int> :: iterator connectedVert; 
+	    cout<<YELLOW_TEXT("Adjacency List:")<<endl;
+		for (int x = 0; x < vert_node.size(); ++x){
+			cout<<RED_TEXT("Vertice ")<< vert_node[x]<<" |";
+		    for(connectedVert = adjAsList[x].begin(); connectedVert != adjAsList[x].end(); connectedVert++){
+		    	cout<<" " << *connectedVert;
+		    }
+		    cout<<endl;
 		}
-
-		cout<<"position on vert_node: "<<send2Add[0]<<" - "<<send2Add[1]<<endl;
-		cout<<"value on vert_node: "<<vert_node[send2Add[0]]<<" - "<<vert_node[send2Add[1]]<<endl;
-
-		vector <int> unVisited;
-		vector <int> visited;
-
-
-
-
-
-
-
 	}
 
+
+
+	int sendIndex(int value){
+		for (int x = 0; x < vert_node.size(); x++){
+			if(value==vert_node[x]){
+				return x;
+			}
+		}
+		return -1;
+	}
 
 
 
@@ -455,19 +592,14 @@ int main(){
 
 	
 	//DINAMIC
-	//getline(cin,numVert);
-		
-
-
-	//gra.splitInputStr(numVert,0);
+	getline(cin,numVert);
 
 
 
 	
 	//STATIC
-	gra.splitInputStr("11 22 33 44 55 66",0);	
-/*
-	while(gra.splitInputStr("11 22 33 44 55 66",0)!=true){
+	//gra.splitInputStr("11 22 33 44 55 66 77",0);	
+	while(gra.splitInputStr(numVert,0)!=true){
 
 		cin.clear();
 		cout<<string((getmaxWidth()/2)-9,' ')<<RED_TEXT("Identify valid vertices(non-negative)")<<endl;
@@ -476,14 +608,13 @@ int main(){
 		gra.splitInputStr(numVert,0);
 
 	}
-*/
-	gra.matrixGraph();
+
+
+
 	cout<<GREEN_TEXT("Creating graph ")<<gra.vert_node.size()<<"x"<<gra.vert_node.size()<<endl<<"..."<<endl;
-	cout<<"Show Actual Graph"<<endl;
+	gra.matrixGraph();
+
 	gra.showMatrix();
-
-
-
 
 
 
@@ -507,7 +638,7 @@ int main(){
 	// Dinamic
 
 	numVert.empty();
-/*
+
 	getline(cin,numVert);
 
 	//gra.splitVertice2Edge(numVert);
@@ -520,51 +651,50 @@ int main(){
 		getline(cin,numVert);
 
 	}
-*/
-
-	
 
 	cout<<endl;
 	//grab 
+	//create edges to the vertices
+	/*
 	gra.splitInputStr("11 44 5",1);
 	gra.splitInputStr("22 33 10",1); 
-	gra.splitInputStr("33 66 10",1);
-	gra.splitInputStr("44 55 5",1);
-	gra.splitInputStr("44 66 20",1);
+	gra.splitInputStr("66 33 10",1);
+	gra.splitInputStr("44 66 5",1);
+	gra.splitInputStr("44 22 5",1);
+	gra.splitInputStr("44 55 20",1);
+	gra.splitInputStr("55 77 20",1);
 	cout<<endl;
+	*/
 
 	cout<<endl;
 	cout<<"Actual Graph"<<endl;
 	gra.showMatrix();
 	cout<<endl;
-	cout<<"Creating Adjacency List :"<<endl;
+	//cout<<"Creating Adjacency List :"<<endl;
 	gra.creatAdjList();
-	cout<<"Adjacency List :"<<endl;
-	gra.showAdjList();
-	//cout<<"DPS Imple:"<<endl;
-	//gra.DFS(22);
+	//cout<<"Adjacency List :"<<endl;
+	//gra.showAdjVector();
+	gra.showlist();
 
-
-	//gra.path2Vertice();
-
-	//gra.isConnectedFull();
-	/*
-	if(gra.isConnectedEdge(66,66)>0){
-		cout<<GREEN_TEXT("Connected")<<endl;
-	}else{cout<<RED_TEXT("Not connected")<<endl;}
-	*/
-	//gra.dijkstraAlgorithm();
-/* 
-
-	if(gra.isConnectedFull()==true){
-		cout<<GREEN_TEXT("Yes, This graph is strongly connected")<<endl;
-	}else{
-		cout<<RED_TEXT("No, This graph isn't strongly connected")<<endl;
+	//Give vertice and from there say if graph is all connected
+	//context fifo
+	int chooseVerti;
+	cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Check if the graph is strong")<<endl;
+	cout<<string((getmaxWidth()/2)-10,' ')<<GREEN_TEXT("Input a vertice")<<endl;
+	cin>>chooseVerti;
+	while(cin.fail()|| gra.isConnected(chooseVerti)==false){
+		cin.clear();
+		cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Wrong Vertice")<<endl;
+		cout<<string((getmaxWidth()/2)-10,' ')<<RED_TEXT("Other: \t")<<endl;
+		cin>>chooseVerti;
+		gra.isConnected(chooseVerti);
 	}
-*/
+cout<<"----"<<endl;
+	gra.isConnected(chooseVerti);//BFS Method
+	//gra.isPath(22,44);
+	
+	//gra.isDFSlogic(22);
 
-
-	//gra.deletePossiLeaks();
 
 	return 0;
 }

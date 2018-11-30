@@ -16,6 +16,8 @@ middle
 didactic
 chicken
 report
+dashing
+report
 harm
 cynical
 satisfy
@@ -24,9 +26,6 @@ unbecoming
 chicken
 report
 dashing
-conas
-fodas
-ola
 chicken
 report
 sweet
